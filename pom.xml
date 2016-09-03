@@ -7,6 +7,9 @@
     <packaging>jar</packaging>
     <name>HTTP Spy</name>
     <description>HTTP Spy is a spy/mock tool for unit tests on HTTP clients</description>
+    <prerequisites>
+        <maven>3.0.5</maven>
+    </prerequisites>
 
     <properties>
 
@@ -21,20 +24,20 @@
 
         <!-- BEGIN: Plugins versions -->
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
-        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-        <maven-resources-plugin.version>2.4.3</maven-resources-plugin.version>
-        <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+        <maven-resources-plugin.version>3.0.1</maven-resources-plugin.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
-        <sortpom-maven-plugin.version>2.4.0</sortpom-maven-plugin.version>
+        <sortpom-maven-plugin.version>2.5.0</sortpom-maven-plugin.version>
         <formatter-maven-plugin.version>0.5.2</formatter-maven-plugin.version>
-        <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
+        <findbugs-maven-plugin.version>3.0.4</findbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <com.puppycrawl.tools.checkstyle.version>6.9</com.puppycrawl.tools.checkstyle.version>
         <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
-        <maven-source-plugin.version>2.4</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <!-- END: Plugins versions -->
 
         <!-- BEGIN: dependency versions -->
