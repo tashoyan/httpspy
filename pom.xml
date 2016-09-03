@@ -34,7 +34,7 @@
         <findbugs-maven-plugin.version>3.0.4</findbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-        <com.puppycrawl.tools.checkstyle.version>6.9</com.puppycrawl.tools.checkstyle.version>
+        <com.puppycrawl.tools.checkstyle.version>6.19</com.puppycrawl.tools.checkstyle.version>
         <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
