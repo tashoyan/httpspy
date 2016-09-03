@@ -38,7 +38,7 @@
         <!-- END: Plugins versions -->
 
         <!-- BEGIN: dependency versions -->
-        <httpspy.version.annotations>1.3.2</httpspy.version.annotations>
+        <httpspy.version.annotations>3.0.1u2</httpspy.version.annotations>
         <httpspy.version.commons-collections>4.0</httpspy.version.commons-collections>
         <httpspy.version.commons-lang>2.6</httpspy.version.commons-lang>
         <httpspy.version.commons-lang3>3.4</httpspy.version.commons-lang3>
@@ -61,7 +61,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>net.sourceforge.findbugs</groupId>
+                <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${httpspy.version.annotations}</version>
                 <scope>compile</scope>
@@ -200,7 +200,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.sourceforge.findbugs</groupId>
+            <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
