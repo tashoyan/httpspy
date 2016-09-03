@@ -2,7 +2,7 @@ package org.httpspy;
 
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.Matcher;
 
 /**
@@ -22,7 +22,7 @@ public class DefaultRequestExpectation implements RequestExpectation {
      * 
      * @param requestMatcher Request matcher to check an actual request against
      * this expectation.
-     * @throws IllegalArgumentException requestMatcher is null.
+     * @throws NullPointerException requestMatcher is null.
      */
     protected DefaultRequestExpectation(Matcher<HttpRequest> requestMatcher) {
         Validate.notNull(requestMatcher, "requestMatcher must not be null");

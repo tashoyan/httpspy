@@ -3,8 +3,8 @@ package org.httpspy;
 import java.util.ArrayList;
 import java.util.List;
 import net.jcip.annotations.NotThreadSafe;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -56,7 +56,7 @@ public abstract class AbstractRequestExpectationListBuilder
      * 
      * @param times Number of sequential requests with the same expectation.
      * @param requestExpectationBuilder Request expectation builder.
-     * @throws IllegalArgumentException requestExpectationBuilder is null.
+     * @throws NullPointerException requestExpectationBuilder is null.
      * @throws IllegalArgumentException times is not positive.
      */
     public void expect(int times, RequestExpectationBuilder requestExpectationBuilder) {

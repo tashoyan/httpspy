@@ -43,7 +43,6 @@
         <!-- BEGIN: dependency versions -->
         <httpspy.version.annotations>3.0.1u2</httpspy.version.annotations>
         <httpspy.version.commons-collections>4.0</httpspy.version.commons-collections>
-        <httpspy.version.commons-lang>2.6</httpspy.version.commons-lang>
         <httpspy.version.commons-lang3>3.4</httpspy.version.commons-lang3>
         <httpspy.version.xmlunit>2.2.1</httpspy.version.xmlunit>
         <httpspy.version.jsonassert>1.3.0</httpspy.version.jsonassert>
@@ -73,13 +72,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>${httpspy.version.commons-collections}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <!--TODO Fully migrate to common-langs3-->
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${httpspy.version.commons-lang}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -211,8 +203,8 @@
             <artifactId>commons-collections4</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

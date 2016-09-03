@@ -1,6 +1,5 @@
 package org.httpspy;
 
-import org.httpspy.CamelJettyHttpServerMock;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -8,7 +7,7 @@ public class CamelJettyHttpServerMockConstructTest {
 
     private CamelJettyHttpServerMock httpServerMock;
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void nullHostname() {
         httpServerMock = new CamelJettyHttpServerMock(null, 5, "path");
     }

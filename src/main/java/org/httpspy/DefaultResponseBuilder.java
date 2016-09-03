@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 import net.jcip.annotations.NotThreadSafe;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Default implementation of {@link ResponseBuilder}.
@@ -66,8 +65,7 @@ public class DefaultResponseBuilder implements ResponseBuilder {
 
     @Override
     public ResponseBuilder withHeader(String headerName, String headerValue) {
-        Validate.isTrue(StringUtils.isNotBlank(headerName),
-                "headerName must not be blank");
+        Validate.notBlank(headerName, "headerName must not be blank");
         Validate.notNull(headerValue, "headerValue must not be null");
         headers.computeIfAbsent(headerName,
                 key -> new ArrayList<>(USUAL_HEADER_VALUES)).add(headerValue);

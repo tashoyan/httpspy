@@ -1,7 +1,5 @@
 package org.httpspy;
 
-import org.httpspy.CamelJettyHttpServerMock;
-import org.httpspy.AbstractRequestExpectationListBuilder;
 import static com.jayway.restassured.RestAssured.with;
 import com.jayway.restassured.response.Response;
 import java.util.Collections;

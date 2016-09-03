@@ -8,8 +8,8 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jetty9.JettyHttpComponent9;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
@@ -89,12 +89,13 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
      * then default path {@code /} is used. Otherwise normalized path value is
      * used with leading and trailing slash characters:
      * {@code /path/to/service/}.
-     * @throws IllegalArgumentException hostname is null or empty or blank.
+     * @throws NullPointerException hostname is null.
+     * @throws IllegalArgumentException hostname is empty or blank.
      * @throws IllegalArgumentException port is negative.
      * @throws IllegalArgumentException path contains illegal characters.
      */
     public CamelJettyHttpServerMock(String hostname, int port, String path) {
-        Validate.isTrue(StringUtils.isNotBlank(hostname), "hostname must not be blank");
+        Validate.notBlank(hostname, "hostname must not be blank");
         Validate.isTrue(port > 0, "port must be > 0");
         this.camelContext = new DefaultCamelContext();
         this.hostname = hostname;

@@ -47,8 +47,9 @@ public interface ResponseBuilder {
      * @param headerName Header name.
      * @param headerValue Header value.
      * @return This object.
-     * @throws IllegalArgumentException headerName is null or empty or blank,
-     * headerValue is null.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
+     * @throws NullPointerException headerValue is null.
      */
     ResponseBuilder withHeader(String headerName, String headerValue);
 
@@ -58,7 +59,7 @@ public interface ResponseBuilder {
      * @param timeUnit Time unit for delay.
      * @param delay Delay before sending response.
      * @return This object.
-     * @throws IllegalArgumentException timeUnit is null.
+     * @throws NullPointerException timeUnit is null.
      * @throws IllegalArgumentException delay is negative.
      */
     ResponseBuilder withDelay(TimeUnit timeUnit, long delay);

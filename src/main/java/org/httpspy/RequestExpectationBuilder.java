@@ -37,7 +37,7 @@ public interface RequestExpectationBuilder {
      * 
      * @param valueExpectation Expected method.
      * @return This object.
-     * @throws IllegalArgumentException valueExpectation is null.
+     * @throws NullPointerException valueExpectation is null.
      */
     RequestExpectationBuilder withMethod(ValueExpectation valueExpectation);
 
@@ -46,7 +46,7 @@ public interface RequestExpectationBuilder {
      * 
      * @param valueExpectation Expected path.
      * @return This object.
-     * @throws IllegalArgumentException valueExpectation is null.
+     * @throws NullPointerException valueExpectation is null.
      */
     RequestExpectationBuilder withPath(ValueExpectation valueExpectation);
 
@@ -55,7 +55,7 @@ public interface RequestExpectationBuilder {
      * 
      * @param valueExpectation Expected body.
      * @return This object.
-     * @throws IllegalArgumentException valueExpectation is null.
+     * @throws NullPointerException valueExpectation is null.
      */
     RequestExpectationBuilder withBody(ValueExpectation valueExpectation);
 
@@ -64,7 +64,8 @@ public interface RequestExpectationBuilder {
      * 
      * @param headerName Header name.
      * @return This object.
-     * @throws IllegalArgumentException headerName is null or empty or blank.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
      */
     RequestExpectationBuilder withHeader(String headerName);
 
@@ -75,8 +76,9 @@ public interface RequestExpectationBuilder {
      * @param headerName Header name.
      * @param valueExpectation Expected header value.
      * @return This object.
-     * @throws IllegalArgumentException valueExpectation is null.
-     * @throws IllegalArgumentException headerName is null or empty or blank.
+     * @throws NullPointerException valueExpectation is null.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
      */
     RequestExpectationBuilder withHeader(String headerName,
             ValueExpectation valueExpectation);
@@ -89,8 +91,9 @@ public interface RequestExpectationBuilder {
      * @param valueIndex Header value index in the list of header values.
      * @param valueExpectation Expected header value.
      * @return This object.
-     * @throws IllegalArgumentException valueExpectation is null.
-     * @throws IllegalArgumentException headerName is null or empty or blank.
+     * @throws NullPointerException valueExpectation is null.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
      * @throws IllegalArgumentException valueIndex is negative.
      */
     RequestExpectationBuilder withHeader(String headerName, int valueIndex,
@@ -101,7 +104,8 @@ public interface RequestExpectationBuilder {
      * 
      * @param headerName Header name.
      * @return This object.
-     * @throws IllegalArgumentException headerName is null or empty or blank.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
      */
     RequestExpectationBuilder withoutHeader(String headerName);
 
@@ -120,7 +124,7 @@ public interface RequestExpectationBuilder {
      * 
      * @param responseBuilder Response builder.
      * @return This object.
-     * @throws IllegalArgumentException valueExpectation is null.
+     * @throws NullPointerException responseBuilder is null.
      */
     RequestExpectationBuilder andResponse(ResponseBuilder responseBuilder);
 }

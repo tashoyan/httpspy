@@ -5,8 +5,7 @@ import java.util.Map;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -26,11 +25,11 @@ public class WithoutHeaderRequestMatcher extends TypeSafeMatcher<HttpRequest> {
      * 
      * @param headerName Header name. If a request has a header with this name,
      * then it does not match.
-     * @throws IllegalArgumentException headerName is null or empty or blank.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
      */
     public WithoutHeaderRequestMatcher(String headerName) {
-        Validate.isTrue(StringUtils.isNotBlank(headerName),
-                "headerName must not be blank");
+        Validate.notBlank(headerName, "headerName must not be blank");
         this.headerName = headerName;
     }
 

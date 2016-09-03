@@ -13,7 +13,7 @@ import net.jcip.annotations.ThreadSafe;
 import org.apache.camel.Exchange;
 import org.apache.camel.http.common.HttpMessage;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Implementation of {@link HttpRequest} to use with
@@ -43,8 +43,9 @@ public class CamelJettyHttpRequest implements HttpRequest {
      * Create new request from Exchange.
      * 
      * @param exchange Exchange object.
-     * @throws IllegalArgumentException Exchange is null or does not contain
-     * HTTP In message.
+     * @throws NullPointerException Exchange is null.
+     * @throws IllegalArgumentException Exchange does not contain HTTP In
+     * message.
      * @throws IOException Cannot read HTTP request body.
      */
     public CamelJettyHttpRequest(Exchange exchange) throws IOException {

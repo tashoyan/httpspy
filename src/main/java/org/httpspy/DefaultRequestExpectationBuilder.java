@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import net.jcip.annotations.NotThreadSafe;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 
@@ -161,7 +160,6 @@ public class DefaultRequestExpectationBuilder implements RequestExpectationBuild
     }
 
     private void assertHeaderNameNotBlank(String headerName) {
-        Validate.isTrue(StringUtils.isNotBlank(headerName),
-                "headerName must not be blank");
+        Validate.notBlank(headerName, "headerName must not be blank");
     }
 }

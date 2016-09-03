@@ -5,8 +5,7 @@ import java.util.Map;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -29,13 +28,13 @@ public class HttpRequestHeaderMatcher extends TypeSafeMatcher<HttpRequest> {
      * 
      * @param headerName Header name.
      * @param valueExpectation Expected header value.
-     * @throws IllegalArgumentException headerName is null or empty or blank.
-     * @throws IllegalArgumentException valueExpectation is null.
+     * @throws NullPointerException headerName is null.
+     * @throws IllegalArgumentException headerName is empty or blank.
+     * @throws NullPointerException valueExpectation is null.
      */
     public HttpRequestHeaderMatcher(String headerName,
             ValueExpectation valueExpectation) {
-        Validate.isTrue(StringUtils.isNotBlank(headerName),
-                "headerName must not be blank");
+        Validate.notBlank(headerName, "headerName must not be blank");
         Validate.notNull(valueExpectation, "valueExpectation must not be null");
         this.headerName = headerName;
         this.valueExpectation = valueExpectation;

@@ -11,8 +11,7 @@ import net.jcip.annotations.ThreadSafe;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Implementation of {@link HttpResponse} to use with
@@ -47,8 +46,10 @@ public class CamelJettyHttpResponse implements HttpResponse {
      * @param headers Response headers. If null, then headers will be set to
      * empty map.
      * @param delayMillis Delay in milliseconds before sending the response.
-     * @throws IllegalArgumentException header name is null or empty or blank,
-     * list of header values is null or empty, a header value is null.
+     * @throws NullPointerException header name is null, list of header values
+     * is null, a header value is null.
+     * @throws IllegalArgumentException header name is empty or blank, list of
+     * header values is empty.
      * @throws IllegalArgumentException delayMillis is negative.
      */
     protected CamelJettyHttpResponse(int statusCode, String body,
@@ -61,8 +62,7 @@ public class CamelJettyHttpResponse implements HttpResponse {
             this.headers = Collections.emptyMap();
         } else {
             headers.forEach((headerName, headerValues) -> {
-                Validate.isTrue(StringUtils.isNotBlank(headerName),
-                        "headerName must not be blank");
+                Validate.notBlank(headerName, "headerName must not be blank");
                 Validate.notEmpty(headerValues,
                         "headerValues must not be empty, header: "
                                 + headerName);
@@ -105,7 +105,7 @@ public class CamelJettyHttpResponse implements HttpResponse {
      * 
      * @param exchange Send the response as Out message within this exchange
      * object. Out message allows to drop all headers came with In message.
-     * @throws IllegalArgumentException Exchange is null.
+     * @throws NullPointerException Exchange is null.
      * @throws InterruptedException Interrupted while waiting the delay
      */
     protected void sendInExchange(Exchange exchange) throws InterruptedException {

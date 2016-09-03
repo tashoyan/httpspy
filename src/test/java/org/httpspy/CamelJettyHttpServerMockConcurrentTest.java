@@ -1,7 +1,5 @@
 package org.httpspy;
 
-import org.httpspy.CamelJettyHttpServerMock;
-import org.httpspy.AbstractRequestExpectationListBuilder;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;

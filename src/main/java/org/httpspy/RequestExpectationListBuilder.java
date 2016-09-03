@@ -47,7 +47,7 @@ public interface RequestExpectationListBuilder {
      * Adds a request expectation to this list.
      * 
      * @param requestExpectationBuilder Request expectation builder.
-     * @throws IllegalArgumentException requestExpectationBuilder is null.
+     * @throws NullPointerException requestExpectationBuilder is null.
      */
     void expect(RequestExpectationBuilder requestExpectationBuilder);
 

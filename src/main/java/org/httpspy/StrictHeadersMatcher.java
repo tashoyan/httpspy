@@ -7,7 +7,7 @@ import java.util.Set;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -28,7 +28,7 @@ public class StrictHeadersMatcher extends TypeSafeMatcher<HttpRequest> {
      * @param specifiedHeaders Specified set of header names. If a request has a
      * header not from this set, then it does not match. Empty set means only
      * requests without headers match.
-     * @throws IllegalArgumentException specifiedHeaders is null.
+     * @throws NullPointerException specifiedHeaders is null.
      */
     public StrictHeadersMatcher(Set<String> specifiedHeaders) {
         Validate.notNull(specifiedHeaders, "specifiedHeaders must not be null");
