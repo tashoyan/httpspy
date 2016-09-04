@@ -14,8 +14,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Implementation of {@link HttpResponse} to use with
- * {@link CamelJettyHttpServerMock}.
+ * Implementation of {@link HttpResponse} to use with {@link CamelJettyHttpSpy}.
  * <p>
  * This implementation is immutable and contains immutable fields.
  * <p>

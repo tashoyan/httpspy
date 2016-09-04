@@ -21,10 +21,10 @@ public abstract class AbstractRequestExpectationListBuilder
         implements RequestExpectationListBuilder {
 
     private final List<RequestExpectation> requestExpectations = new ArrayList<>(
-            CamelJettyHttpServerMock.DEFAULT_REQUESTS_NUMBER);
+            CamelJettyHttpSpy.DEFAULT_REQUESTS_NUMBER);
 
     private final List<HttpResponse> responses = new ArrayList<>(
-            CamelJettyHttpServerMock.DEFAULT_REQUESTS_NUMBER);
+            CamelJettyHttpSpy.DEFAULT_REQUESTS_NUMBER);
 
     @Override
     public List<RequestExpectation> getRequestExpectations() {

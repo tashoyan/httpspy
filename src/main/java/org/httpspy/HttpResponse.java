@@ -7,8 +7,8 @@ import net.jcip.annotations.ThreadSafe;
 /**
  * HTTP response.
  * <p>
- * This bean contains properties of HTTP response. {@link HttpServerMock}
- * implementations use it when sending a response on an incoming request.
+ * This bean contains properties of HTTP response. An implementation of
+ * {@link HttpSpy} uses it when sending a response on an incoming request.
  * <p>
  * <b>Concurrency notes.</b> User creates an instance of this class when setting
  * expectations before the actual test has started. During the test, another

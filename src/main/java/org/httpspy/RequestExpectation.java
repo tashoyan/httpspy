@@ -6,9 +6,9 @@ import org.hamcrest.Matcher;
 /**
  * Request expectation.
  * <p>
- * Provides expectations for a request received by {@link HttpServerMock}.
- * During verification, mock server compares every actual request received with
- * its expectation. In addition, expectation may declare hoe mock server should
+ * Provides expectations for a request received by {@link HttpSpy}. During
+ * verification, the spy server compares every actual request received with its
+ * expectation. In addition, expectation may declare how the spy server should
  * response on the request.
  * <p>
  * <b>Concurrency notes.</b> User creates an object of this class when setting
@@ -18,7 +18,7 @@ import org.hamcrest.Matcher;
  * thread reads the expectation object during verification. Therefore an
  * implementation should be thread safe.
  * 
- * @see HttpServerMock#verify()
+ * @see HttpSpy#verify()
  */
 @ThreadSafe
 public interface RequestExpectation {

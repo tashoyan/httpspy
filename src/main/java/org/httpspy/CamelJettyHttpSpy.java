@@ -14,15 +14,15 @@ import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
 /**
- * Implementation of {@link HttpServerMock} based on camel-jetty component.
+ * Implementation of {@link HttpSpy} based on camel-jetty component.
  * <p>
  * TODO Configurable chunked attribute for jetty endpoint (now hardcoded).
  */
 @NotThreadSafe
-public class CamelJettyHttpServerMock implements HttpServerMock {
+public class CamelJettyHttpSpy implements HttpSpy {
 
     /**
-     * Default host name for mock server.
+     * Default host name for the spy server.
      */
     protected static final String DEFAULT_HOSTNAME = "localhost";
 
@@ -41,7 +41,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
 
     private static final String DEFAULT_PATH = PATH_SEPARATOR;
 
-    private static final String MOCK_ROUTE_NAME = "mockserver-consumer";
+    private static final String SPY_ROUTE_NAME = "spy-server-consumer";
 
     private final CamelContext camelContext;
 
@@ -65,7 +65,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
             DEFAULT_REQUESTS_NUMBER);
 
     /**
-     * Creates new instance of mock server running on default host
+     * Creates new instance of spy server running on default host
      * {@link #DEFAULT_HOSTNAME}.
      * 
      * @param port Network port where server will run.
@@ -76,12 +76,15 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
      * @throws IllegalArgumentException port is negative.
      * @throws IllegalArgumentException path contains illegal characters.
      */
-    public CamelJettyHttpServerMock(int port, String path) {
+    public CamelJettyHttpSpy(int port, String path) {
         this(DEFAULT_HOSTNAME, port, path);
     }
 
     /**
-     * Creates new instance of mock server.
+     * Creates new instance of spy server.
+     * <p>
+     * TODO; Do we need this constructor as far as we run it always on
+     * localhost?
      * 
      * @param hostname Host name where server will run.
      * @param port Network port where server will run.
@@ -94,7 +97,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
      * @throws IllegalArgumentException port is negative.
      * @throws IllegalArgumentException path contains illegal characters.
      */
-    public CamelJettyHttpServerMock(String hostname, int port, String path) {
+    public CamelJettyHttpSpy(String hostname, int port, String path) {
         Validate.notBlank(hostname, "hostname must not be blank");
         Validate.isTrue(port > 0, "port must be > 0");
         this.camelContext = new DefaultCamelContext();
@@ -159,7 +162,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
     public void setServiceThreadsNumber(int serviceThreadsNumber) {
         Validate.isTrue(serviceThreadsNumber > 0, "threadsNumber must be > 0");
         if (isStarted) {
-            throw new IllegalStateException("Mock server already started");
+            throw new IllegalStateException("Spy server has already started");
         }
         this.serviceThreadsNumber = serviceThreadsNumber;
     }
@@ -170,7 +173,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
     }
 
     @Override
-    public HttpServerMock expectRequests(RequestExpectationListBuilder builder) {
+    public HttpSpy expectRequests(RequestExpectationListBuilder builder) {
         builder.build();
         Validate.isTrue(builder.getRequestExpectations().size() == builder
                 .getResponses().size(),
@@ -184,7 +187,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
     @Override
     public void start() {
         if (isStarted) {
-            throw new IllegalStateException("Mock server already started");
+            throw new IllegalStateException("Spy server has already started");
         }
         isStarted = true;
         try {
@@ -202,7 +205,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
                                     + getHostname() + ":" + getPort() + getPath()
                                     + "?sendServerVersion=false" + "&chunked=false"
                                     + "&disableStreamCache=true").process(
-                            createMockProcessor()).setId(MOCK_ROUTE_NAME);
+                            createSpyProcessor()).setId(SPY_ROUTE_NAME);
                 }
             });
         } catch (Exception e) {
@@ -219,12 +222,12 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
      * happens when the number of actual requests is greater, than the number of
      * expected requests and responses.
      */
-    protected Processor createMockProcessor() {
+    protected Processor createSpyProcessor() {
         Processor processor =
                 exchange -> {
                     HttpRequest actualRequest = new CamelJettyHttpRequest(exchange);
                     CamelJettyHttpResponse response;
-                    synchronized (CamelJettyHttpServerMock.this) {
+                    synchronized (CamelJettyHttpSpy.this) {
                         actualRequests.add(actualRequest);
                         if (!responses.isEmpty()) {
                             response = (CamelJettyHttpResponse) responses.remove(0);
@@ -285,7 +288,7 @@ public class CamelJettyHttpServerMock implements HttpServerMock {
         reset();
         try {
             camelContext.stop();
-            camelContext.removeRoute(MOCK_ROUTE_NAME);
+            camelContext.removeRoute(SPY_ROUTE_NAME);
         } catch (Exception e) {
             throw new RuntimeException("Exception while shutting down Camel context",
                     e);

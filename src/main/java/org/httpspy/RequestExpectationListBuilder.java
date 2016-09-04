@@ -6,16 +6,16 @@ import net.jcip.annotations.NotThreadSafe;
 /**
  * Builder that constructs a list of request expectations.
  * <p>
- * Mock server uses the builder to construct {@link RequestExpectation request
- * expectations}. User supplies an instance of the builder to method
- * {@link HttpServerMock#expectRequests}. One instance can be used to construct
+ * HTTP Spy server uses the builder to construct {@link RequestExpectation
+ * request expectations}. User supplies an instance of the builder to method
+ * {@link HttpSpy#expectRequests}. One instance can be used to construct
  * multiple request expectations.
  * <p>
  * <b>Concurrency notes.</b> Builder instances are used in a single thread that
  * prepares requests expectations - typically {@code main} thread.
  * Implementations are not required to be thread safe.
  *
- * @see HttpServerMock#expectRequests
+ * @see HttpSpy#expectRequests
  */
 @NotThreadSafe
 public interface RequestExpectationListBuilder {

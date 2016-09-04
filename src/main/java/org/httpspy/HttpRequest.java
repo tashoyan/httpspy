@@ -7,8 +7,8 @@ import net.jcip.annotations.ThreadSafe;
 /**
  * HTTP request.
  * <p>
- * This bean contains properties of HTTP request. {@link HttpServerMock}
- * implementations use it to record actual requests and to verify against
+ * This bean contains properties of HTTP request. An implementation of
+ * {@link HttpSpy} uses it to record actual requests and to verify against
  * request expectations.
  * <p>
  * <b>Concurrency notes.</b>An instance of this class is written in the thread

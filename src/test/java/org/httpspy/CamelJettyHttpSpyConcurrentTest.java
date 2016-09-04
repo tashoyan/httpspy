@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CamelJettyHttpServerMockConcurrentTest {
+public class CamelJettyHttpSpyConcurrentTest {
 
-    private static final String TO_MOCKSERVER_ENDPOINT = "direct:to-mockserver";
+    private static final String TO_SPY_SERVER_ENDPOINT = "direct:to-spy-server";
 
-    private static final int MOCK_SERVER_PORT = 47604;
+    private static final int SPY_SERVER_PORT = 47604;
 
-    private static final String MOCK_SERVER_PATH = "/mockseverpath/";
+    private static final String SPY_SERVER_PATH = "/spyseverpath/";
 
-    private CamelJettyHttpServerMock httpServerMock;
+    private CamelJettyHttpSpy httpSpy;
 
     private CamelContext camelContext;
 
@@ -36,7 +36,7 @@ public class CamelJettyHttpServerMockConcurrentTest {
     @BeforeClass
     public static void useProductionLogging() {
         URL config =
-                CamelJettyHttpServerMockConcurrentTest.class
+                CamelJettyHttpSpyConcurrentTest.class
                         .getResource("log4j-production.xml");
         System.out.println("Setting production logging: "
                 + config.getFile());
@@ -60,8 +60,8 @@ public class CamelJettyHttpServerMockConcurrentTest {
 
             @Override
             public void configure() throws Exception {
-                from(TO_MOCKSERVER_ENDPOINT).to("http4://localhost:"
-                        + MOCK_SERVER_PORT + MOCK_SERVER_PATH).setId("test-producer");
+                from(TO_SPY_SERVER_ENDPOINT).to("http4://localhost:"
+                        + SPY_SERVER_PORT + SPY_SERVER_PATH).setId("test-producer");
             }
         });
         camelContext.start();
@@ -76,11 +76,10 @@ public class CamelJettyHttpServerMockConcurrentTest {
 
     private long runTest(int clientRequestsNumber, int serverThreadsNumber,
             long executionTime) throws Exception {
-        httpServerMock =
-                new CamelJettyHttpServerMock(MOCK_SERVER_PORT, MOCK_SERVER_PATH);
-        httpServerMock.setServiceThreadsNumber(serverThreadsNumber);
-        httpServerMock.start();
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy = new CamelJettyHttpSpy(SPY_SERVER_PORT, SPY_SERVER_PATH);
+        httpSpy.setServiceThreadsNumber(serverThreadsNumber);
+        httpSpy.start();
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -107,7 +106,7 @@ public class CamelJettyHttpServerMockConcurrentTest {
                                 + getName());
                     }
                     startTime.compareAndSet(0, System.currentTimeMillis());
-                    producerTemplate.requestBody(TO_MOCKSERVER_ENDPOINT, "request-"
+                    producerTemplate.requestBody(TO_SPY_SERVER_ENDPOINT, "request-"
                             + getName(), String.class);
                 }
             };
@@ -119,8 +118,8 @@ public class CamelJettyHttpServerMockConcurrentTest {
         }
         long totalExecutionTime = System.currentTimeMillis()
                 - startTime.get();
-        httpServerMock.verify();
-        httpServerMock.stop();
+        httpSpy.verify();
+        httpSpy.stop();
         return totalExecutionTime;
     }
 

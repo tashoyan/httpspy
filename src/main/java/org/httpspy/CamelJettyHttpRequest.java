@@ -16,8 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Implementation of {@link HttpRequest} to use with
- * {@link CamelJettyHttpServerMock}.
+ * Implementation of {@link HttpRequest} to use with {@link CamelJettyHttpSpy}.
  * <p>
  * This implementation is immutable and contains immutable fields.
  * <p>

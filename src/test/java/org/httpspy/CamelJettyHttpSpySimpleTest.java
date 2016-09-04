@@ -7,40 +7,39 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CamelJettyHttpServerMockSimpleTest {
+public class CamelJettyHttpSpySimpleTest {
 
-    private static final String MOCK_SERVER_HOST = "0.0.0.0";
+    private static final String SPY_SERVER_HOST = "0.0.0.0";
 
-    private static final int MOCK_SERVER_PORT = 47604;
+    private static final int SPY_SERVER_PORT = 47604;
 
-    private static final String MOCK_SERVER_PATH = "/mockseverpath/";
+    private static final String SPY_SERVER_PATH = "/spyseverpath/";
 
-    private static final String MOCKSERVER_URL = "http://"
-            + MOCK_SERVER_HOST + ":" + MOCK_SERVER_PORT + MOCK_SERVER_PATH;
+    private static final String SPY_SERVER_URL = "http://"
+            + SPY_SERVER_HOST + ":" + SPY_SERVER_PORT + SPY_SERVER_PATH;
 
-    private CamelJettyHttpServerMock httpServerMock;
+    private CamelJettyHttpSpy httpSpy;
 
     @Before
     public void before() throws Exception {
-        httpServerMock =
-                new CamelJettyHttpServerMock(MOCK_SERVER_HOST, MOCK_SERVER_PORT,
-                        MOCK_SERVER_PATH);
-        httpServerMock.start();
+        httpSpy =
+                new CamelJettyHttpSpy(SPY_SERVER_HOST, SPY_SERVER_PORT,
+                        SPY_SERVER_PATH);
+        httpSpy.start();
     }
 
     @After
     public void after() throws Exception {
-        httpServerMock.stop();
+        httpSpy.stop();
     }
 
     @Test
     public void oneRequestWithResponse() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -49,7 +48,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                         .withHeader("h1", 0, equalTo("v1"))
                         .withHeader("h2", 0, equalToIgnoreCase("v2"))
                         .withMethod(equalTo("POST"))
-                        .withPath(equalTo(MOCK_SERVER_PATH))
+                        .withPath(equalTo(SPY_SERVER_PATH))
                         .andResponse(
                                 response().withStatus(200).withBody("OK")
                                         .withHeader("h2", "v2")));
@@ -60,33 +59,33 @@ public class CamelJettyHttpServerMockSimpleTest {
         headers.put("h2", "V2");
         Response response =
                 with().body("<body>Hello</body>").headers(headers)
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200).body(is("OK")).header("h2", "v2");
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void oneRequestWithoutResponse() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
                 expect(request().withBody(equalTo("<body>Hello</body>"))
                         .withHeader("h1", equalTo("v1")).withMethod(equalTo("POST"))
-                        .withPath(equalTo(MOCK_SERVER_PATH)));
+                        .withPath(equalTo(SPY_SERVER_PATH)));
             }
         });
         Response response =
                 with().body("<body>Hello</body>")
                         .headers(Collections.singletonMap("h1", "v1"))
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200).body(is(""));
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void emptyRequestExpectation() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -96,14 +95,14 @@ public class CamelJettyHttpServerMockSimpleTest {
         Response response =
                 with().body("<body>Hello</body>")
                         .headers(Collections.singletonMap("h1", "v1"))
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200).body(is(""));
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void bodyEqualToXml() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -111,14 +110,14 @@ public class CamelJettyHttpServerMockSimpleTest {
             }
         });
         Response response =
-                with().body("<xml><color>red</color></xml>").post(MOCKSERVER_URL);
+                with().body("<xml><color>red</color></xml>").post(SPY_SERVER_URL);
         response.then().statusCode(200).body(is(""));
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void bodyNotEqualToXml() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -126,10 +125,10 @@ public class CamelJettyHttpServerMockSimpleTest {
             }
         });
         Response response =
-                with().body("<xml><color>green</color></xml>").post(MOCKSERVER_URL);
+                with().body("<xml><color>green</color></xml>").post(SPY_SERVER_URL);
         response.then().statusCode(200).body(is(""));
         try {
-            httpServerMock.verify();
+            httpSpy.verify();
             fail("AssertionError expected");
         } catch (AssertionError e) {
             assertThat(
@@ -142,7 +141,7 @@ public class CamelJettyHttpServerMockSimpleTest {
 
     @Test
     public void bodyEqualToJson() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -152,14 +151,14 @@ public class CamelJettyHttpServerMockSimpleTest {
         });
         Response response =
                 with().body("{\"value1\":\"1\", \"value2\":\"2\"}").post(
-                        MOCKSERVER_URL);
+                        SPY_SERVER_URL);
         response.then().statusCode(200).body(is(""));
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void bodyNotEqualToJson() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -169,10 +168,10 @@ public class CamelJettyHttpServerMockSimpleTest {
         });
         Response response =
                 with().body("{\"value1\":\"1\", \"value3\":\"3\"}").post(
-                        MOCKSERVER_URL);
+                        SPY_SERVER_URL);
         response.then().statusCode(200).body(is(""));
         try {
-            httpServerMock.verify();
+            httpSpy.verify();
             fail("AssertionError expected");
         } catch (AssertionError e) {
             assertThat(
@@ -185,7 +184,7 @@ public class CamelJettyHttpServerMockSimpleTest {
 
     @Test
     public void unexpectedHeaderValue() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -196,10 +195,10 @@ public class CamelJettyHttpServerMockSimpleTest {
         Response response =
                 with().body("<body>Hello</body>")
                         .headers(Collections.singletonMap("h1", "unexpected_value"))
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200);
         try {
-            httpServerMock.verify();
+            httpSpy.verify();
             fail("AssertionError expected");
         } catch (AssertionError e) {
             assertThat("Error message reports about unexpected header value",
@@ -210,7 +209,7 @@ public class CamelJettyHttpServerMockSimpleTest {
 
     @Test
     public void withHeaderAnyValue() {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -221,12 +220,12 @@ public class CamelJettyHttpServerMockSimpleTest {
         Response response =
                 with().body("<body>Hello</body>")
                         .headers(Collections.singletonMap("h1", "v1"))
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200);
-        response = with().body("<body>Hello 2</body>").post(MOCKSERVER_URL);
+        response = with().body("<body>Hello 2</body>").post(SPY_SERVER_URL);
         response.then().statusCode(200);
         try {
-            httpServerMock.verify();
+            httpSpy.verify();
             fail("AssertionError expected");
         } catch (AssertionError e) {
             assertThat(
@@ -239,7 +238,7 @@ public class CamelJettyHttpServerMockSimpleTest {
 
     @Test
     public void withoutHeader() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -250,10 +249,10 @@ public class CamelJettyHttpServerMockSimpleTest {
         Response response =
                 with().body("<body>Hello</body>")
                         .headers(Collections.singletonMap("h1", "without_header"))
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200);
         try {
-            httpServerMock.verify();
+            httpSpy.verify();
             fail("AssertionError expected");
         } catch (AssertionError e) {
             assertThat("Error message reports that request should be without header",
@@ -264,7 +263,7 @@ public class CamelJettyHttpServerMockSimpleTest {
 
     @Test
     public void strictHeadersUnexpectedHeader() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -277,10 +276,10 @@ public class CamelJettyHttpServerMockSimpleTest {
         headers.put("unexpected_header", "v2");
         Response response =
                 with().body("<body>Hello</body>").headers(headers)
-                        .post(MOCKSERVER_URL);
+                        .post(SPY_SERVER_URL);
         response.then().statusCode(200);
         try {
-            httpServerMock.verify();
+            httpSpy.verify();
             fail("AssertionError expected");
         } catch (AssertionError e) {
             assertThat(
@@ -293,7 +292,7 @@ public class CamelJettyHttpServerMockSimpleTest {
 
     @Test
     public void responseHeaderMultipleValues() {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -302,14 +301,14 @@ public class CamelJettyHttpServerMockSimpleTest {
                                 .withHeader("h1", "v2").withHeader("h1", "v3")));
             }
         });
-        Response response = with().body("<body>Hello</body>").post(MOCKSERVER_URL);
+        Response response = with().body("<body>Hello</body>").post(SPY_SERVER_URL);
         response.then().statusCode(200).header("h1", "v1,v2,v3");
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void manyRequestsAllWithResponses() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -319,7 +318,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                                         containsString("1"))))
                         .withHeader("request", matching(endsWith("1")))
                         .withMethod(matching(startsWith("PO")))
-                        .withPath(equalTo(MOCK_SERVER_PATH))
+                        .withPath(equalTo(SPY_SERVER_PATH))
                         .andResponse(
                                 response().withStatus(200).withBody("OK1")
                                         .withHeader("reply", "v1")));
@@ -329,7 +328,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                                         containsString("2"))))
                         .withHeader("request", matching(endsWith("2")))
                         .withMethod(matching(startsWith("PO")))
-                        .withPath(equalTo(MOCK_SERVER_PATH))
+                        .withPath(equalTo(SPY_SERVER_PATH))
                         .andResponse(
                                 response().withStatus(200).withBody("OK2")
                                         .withHeader("reply", "v2")));
@@ -339,7 +338,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                                         containsString("3"))))
                         .withHeader("request", matching(endsWith("3")))
                         .withMethod(matching(startsWith("PO")))
-                        .withPath(equalTo(MOCK_SERVER_PATH))
+                        .withPath(equalTo(SPY_SERVER_PATH))
                         .andResponse(
                                 response().withStatus(200).withBody("OK3")
                                         .withHeader("reply", "v3")));
@@ -349,17 +348,17 @@ public class CamelJettyHttpServerMockSimpleTest {
         for (int i = 1; i <= requestsNumber; i++) {
             Response response = with().body("body"
                     + i).headers(Collections.singletonMap("request", "v"
-                    + i)).post(MOCKSERVER_URL);
+                    + i)).post(SPY_SERVER_URL);
             response.then().statusCode(200).body(is("OK"
                     + i)).header("reply", "v"
                     + i);
         }
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void manyRequestsSomeWithResponses() throws Exception {
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -369,7 +368,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                                         containsString("1"))))
                         .withHeader("request", matching(endsWith("1")))
                         .withMethod(matching(startsWith("PO")))
-                        .withPath(equalTo(MOCK_SERVER_PATH))
+                        .withPath(equalTo(SPY_SERVER_PATH))
                         .andResponse(
                                 response().withStatus(200).withBody("OK1")
                                         .withHeader("reply", "v1")));
@@ -379,14 +378,14 @@ public class CamelJettyHttpServerMockSimpleTest {
                                         containsString("2"))))
                         .withHeader("request", matching(endsWith("2")))
                         .withMethod(matching(startsWith("PO")))
-                        .withPath(equalTo(MOCK_SERVER_PATH)));
+                        .withPath(equalTo(SPY_SERVER_PATH)));
                 expect(request()
                         .withBody(
                                 matching(both(containsString("body")).and(
                                         containsString("3"))))
                         .withHeader("request", matching(endsWith("3")))
                         .withMethod(matching(startsWith("PO")))
-                        .withPath(equalTo(MOCK_SERVER_PATH))
+                        .withPath(equalTo(SPY_SERVER_PATH))
                         .andResponse(
                                 response().withStatus(200).withBody("OK3")
                                         .withHeader("reply", "v3")));
@@ -396,7 +395,7 @@ public class CamelJettyHttpServerMockSimpleTest {
         for (int i = 1; i <= requestsNumber; i++) {
             Response response = with().body("body"
                     + i).headers(Collections.singletonMap("request", "v"
-                    + i)).post(MOCKSERVER_URL);
+                    + i)).post(SPY_SERVER_URL);
             response.then().statusCode(200);
             if (i == 2) {
                 response.then().body(is("")).header("reply", nullValue());
@@ -406,13 +405,13 @@ public class CamelJettyHttpServerMockSimpleTest {
                         + i);
             }
         }
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
     public void manyRequestsWithResponsesManyTimes() throws Exception {
         int requestsNumber = 10;
-        httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
             public void build() {
@@ -421,7 +420,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                                 .withBody(equalTo("<body>Hello</body>"))
                                 .withHeader("request")
                                 .withMethod(equalTo("POST"))
-                                .withPath(equalTo(MOCK_SERVER_PATH))
+                                .withPath(equalTo(SPY_SERVER_PATH))
                                 .andResponse(
                                         response().withStatus(200).withBody("OK")
                                                 .withHeader("reply", "v")));
@@ -431,17 +430,17 @@ public class CamelJettyHttpServerMockSimpleTest {
             Response response =
                     with().body("<body>Hello</body>")
                             .headers(Collections.singletonMap("request", "v"))
-                            .post(MOCKSERVER_URL);
+                            .post(SPY_SERVER_URL);
             response.then().statusCode(200).body(is("OK")).header("reply", "v");
         }
-        httpServerMock.verify();
+        httpSpy.verify();
     }
 
     @Test
-    public void useSameMockServerServeralTimes() throws Exception {
+    public void useSameSpyServerServeralTimes() throws Exception {
         int reuseNumber = 5;
         for (int i = 0; i < reuseNumber; i++) {
-            httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+            httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
                 @Override
                 public void build() {
@@ -449,10 +448,10 @@ public class CamelJettyHttpServerMockSimpleTest {
                 }
             });
             Response response = with().body("request-"
-                    + i).post(MOCKSERVER_URL);
+                    + i).post(SPY_SERVER_URL);
             response.then().statusCode(200);
-            httpServerMock.verify();
-            httpServerMock.reset();
+            httpSpy.verify();
+            httpSpy.reset();
         }
     }
 
@@ -464,7 +463,7 @@ public class CamelJettyHttpServerMockSimpleTest {
                     + i;
             String responseBody = "response-"
                     + i;
-            httpServerMock.expectRequests(new AbstractRequestExpectationListBuilder() {
+            httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
                 @Override
                 public void build() {
@@ -475,7 +474,7 @@ public class CamelJettyHttpServerMockSimpleTest {
         }
         for (int i = 0; i < expectRequestsNumber; i++) {
             Response response = with().body("request-"
-                    + i).post(MOCKSERVER_URL);
+                    + i).post(SPY_SERVER_URL);
             response.then().statusCode(200).body(is("response-"
                     + i));
         }
