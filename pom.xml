@@ -41,21 +41,21 @@
         <!-- END: Plugins versions -->
 
         <!-- BEGIN: dependency versions -->
-        <httpspy.version.annotations>3.0.1u2</httpspy.version.annotations>
-        <httpspy.version.commons-collections>4.1</httpspy.version.commons-collections>
-        <httpspy.version.commons-lang3>3.4</httpspy.version.commons-lang3>
-        <httpspy.version.xmlunit>2.2.1</httpspy.version.xmlunit>
-        <httpspy.version.jsonassert>1.3.0</httpspy.version.jsonassert>
-        <httpspy.version.json>20160810</httpspy.version.json>
-        <httpspy.version.hamcrest>1.3</httpspy.version.hamcrest>
-        <httpspy.version.geronimo-servlet_3.0_spec>1.0</httpspy.version.geronimo-servlet_3.0_spec>
-        <httpspy.version.camel>2.17.3</httpspy.version.camel>
-        <httpspy.version.slf4j>1.7.21</httpspy.version.slf4j>
-        <httpspy.version.rest-assured>2.9.0</httpspy.version.rest-assured>
-        <httpspy.version.junit>4.12</httpspy.version.junit>
-        <httpspy.version.httpcore>4.4.5</httpspy.version.httpcore>
-        <httpspy.version.httpclient>4.5.2</httpspy.version.httpclient>
-        <httpspy.version.log4j>1.2.17</httpspy.version.log4j>
+        <version.annotations>3.0.1u2</version.annotations>
+        <version.commons-collections>4.1</version.commons-collections>
+        <version.commons-lang3>3.4</version.commons-lang3>
+        <version.xmlunit>2.2.1</version.xmlunit>
+        <version.jsonassert>1.3.0</version.jsonassert>
+        <version.json>20160810</version.json>
+        <version.hamcrest>1.3</version.hamcrest>
+        <version.geronimo-servlet_3.0_spec>1.0</version.geronimo-servlet_3.0_spec>
+        <version.camel>2.17.3</version.camel>
+        <version.slf4j>1.7.21</version.slf4j>
+        <version.rest-assured>2.9.0</version.rest-assured>
+        <version.junit>4.12</version.junit>
+        <version.httpcore>4.4.5</version.httpcore>
+        <version.httpclient>4.5.2</version.httpclient>
+        <version.log4j>1.2.17</version.log4j>
         <!-- END: dependency versions -->
 
     </properties>
@@ -65,123 +65,123 @@
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
-                <version>${httpspy.version.annotations}</version>
+                <version>${version.annotations}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>${httpspy.version.commons-collections}</version>
+                <version>${version.commons-collections}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>${httpspy.version.commons-lang3}</version>
+                <version>${version.commons-lang3}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-core</artifactId>
-                <version>${httpspy.version.hamcrest}</version>
+                <version>${version.hamcrest}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                <version>${httpspy.version.geronimo-servlet_3.0_spec}</version>
+                <version>${version.geronimo-servlet_3.0_spec}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-core</artifactId>
-                <version>${httpspy.version.camel}</version>
+                <version>${version.camel}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-http-common</artifactId>
-                <version>${httpspy.version.camel}</version>
+                <version>${version.camel}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-jetty</artifactId>
-                <version>${httpspy.version.camel}</version>
+                <version>${version.camel}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-http4</artifactId>
-                <version>${httpspy.version.camel}</version>
+                <version>${version.camel}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${httpspy.version.slf4j}</version>
+                <version>${version.slf4j}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>${httpspy.version.slf4j}</version>
+                <version>${version.slf4j}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
-                <version>${httpspy.version.log4j}</version>
+                <version>${version.log4j}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <!-- We use SLF4J instead of Apache commons-logging-->
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>${httpspy.version.slf4j}</version>
+                <version>${version.slf4j}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.jayway.restassured</groupId>
                 <artifactId>rest-assured</artifactId>
-                <version>${httpspy.version.rest-assured}</version>
+                <version>${version.rest-assured}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>${httpspy.version.junit}</version>
+                <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <!--TODO Fully migrate to xmlunit2-->
                 <groupId>org.xmlunit</groupId>
                 <artifactId>xmlunit-legacy</artifactId>
-                <version>${httpspy.version.xmlunit}</version>
+                <version>${version.xmlunit}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
-                <version>${httpspy.version.jsonassert}</version>
+                <version>${version.jsonassert}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>${httpspy.version.json}</version>
+                <version>${version.json}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>${httpspy.version.httpcore}</version>
+                <version>${version.httpcore}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>${httpspy.version.httpclient}</version>
+                <version>${version.httpclient}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
