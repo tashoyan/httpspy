@@ -8,12 +8,13 @@
     <name>HTTP Spy</name>
     <description>HTTP Spy is a spy/mock tool for unit tests on HTTP clients</description>
     <prerequisites>
-        <maven>3.0.5</maven>
+        <maven>${maven.required.version}</maven>
     </prerequisites>
 
     <properties>
 
         <!-- BEGIN: Build properties -->
+        <maven.required.version>3.2.3</maven.required.version>
         <maven.build.timestamp.format>dd/MM/yy</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- "java.version" clashes with Java System property -->
@@ -381,7 +382,7 @@
                                             <version>${compiler.java.version}</version>
                                         </requireJavaVersion>
                                         <requireMavenVersion>
-                                            <version>3.2.3</version>
+                                            <version>${maven.required.version}</version>
                                         </requireMavenVersion>
                                     </rules>
                                 </configuration>
@@ -527,13 +528,6 @@
                                 <groupId>com.puppycrawl.tools</groupId>
                                 <artifactId>checkstyle</artifactId>
                                 <version>${com.puppycrawl.tools.checkstyle.version}</version>
-                                <exclusions>
-                                    <!-- MCHECKSTYLE-156 -->
-                                    <exclusion>
-                                        <groupId>com.sun</groupId>
-                                        <artifactId>tools</artifactId>
-                                    </exclusion>
-                                </exclusions>
                             </dependency>
                         </dependencies>
                         <executions>
