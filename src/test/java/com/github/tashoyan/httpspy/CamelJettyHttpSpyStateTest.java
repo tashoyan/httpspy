@@ -15,7 +15,6 @@
  */
 package com.github.tashoyan.httpspy;
 
-import com.github.tashoyan.httpspy.CamelJettyHttpSpy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

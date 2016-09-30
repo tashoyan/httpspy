@@ -15,8 +15,6 @@
  */
 package com.github.tashoyan.httpspy;
 
-import com.github.tashoyan.httpspy.CamelJettyHttpSpy;
-import com.github.tashoyan.httpspy.AbstractRequestExpectationListBuilder;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;

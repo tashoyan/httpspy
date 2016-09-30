@@ -15,8 +15,6 @@
  */
 package com.github.tashoyan.httpspy;
 
-import com.github.tashoyan.httpspy.CamelJettyHttpSpy;
-import com.github.tashoyan.httpspy.AbstractRequestExpectationListBuilder;
 import static com.jayway.restassured.RestAssured.with;
 import com.jayway.restassured.response.Response;
 import java.util.Collections;
