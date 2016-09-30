@@ -18,10 +18,30 @@ limitations under the License.
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.httpspy</groupId>
     <artifactId>httpspy</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
+
     <name>HTTP Spy</name>
     <description>HTTP Spy is a spy/mock tool for unit tests on HTTP clients</description>
+    <url>https://github.com/tashoyan/httpspy</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Arseniy Tashoyan</name>
+            <email>tashoyan@gmail.com</email>
+            <url>https://github.com/tashoyan</url>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/tashoyan/httpspy.git</connection>
+        <developerConnection>scm:git:https://github.com:tashoyan/httpspy.git</developerConnection>
+        <url>https://github.com/tashoyan/httpspy</url>
+    </scm>
     <prerequisites>
         <maven>${maven.required.version}</maven>
     </prerequisites>
