@@ -37,14 +37,14 @@ limitations under the License.
             <url>https://github.com/tashoyan</url>
         </developer>
     </developers>
+    <prerequisites>
+        <maven>${maven.required.version}</maven>
+    </prerequisites>
     <scm>
         <connection>scm:git:https://github.com/tashoyan/httpspy.git</connection>
         <developerConnection>scm:git:https://github.com:tashoyan/httpspy.git</developerConnection>
         <url>https://github.com/tashoyan/httpspy</url>
     </scm>
-    <prerequisites>
-        <maven>${maven.required.version}</maven>
-    </prerequisites>
 
     <properties>
 
