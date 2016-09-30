@@ -105,6 +105,14 @@ instance in the next test:
 
     httpSpy.reset();
 
+## Usage examples
+
+For usage examples, see unit tests:
+
+* `CamelJettyHttpSpySimpleTest`: various single-threaded scenarios
+* `CamelJettyHttpSpyConcurrentTest`: multi-threaded scenarios
+
+
 ## Additional documentation
 
 For configuration options, see Javadoc of methods in `HttpSpy` interface.
