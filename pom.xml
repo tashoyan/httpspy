@@ -394,7 +394,7 @@ limitations under the License.
             <id>validation</id>
             <activation>
                 <property>
-                    <name>!no_validation</name>
+                    <name>!skipValidation</name>
                 </property>
             </activation>
             <build>
