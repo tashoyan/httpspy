@@ -40,7 +40,7 @@ This version of HTTP Spy is implemented with [Camel Jetty](http://camel.apache.o
 
 First, you need to declare a Maven dependency on HTTP Spy:
 
-    <groupId>com.github.tashoyan.httpspy</groupId>
+    <groupId>com.github.tashoyan</groupId>
     <artifactId>httpspy</artifactId>
     <version>1.0</version>
     <scope>test</scope>
