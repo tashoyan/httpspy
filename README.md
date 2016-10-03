@@ -93,7 +93,7 @@ requests it has received:
     httpSpy.verify();
 
 HTTP Spy will fail the test if it finds that some expectations on client
-request are not met.
+requests are not met.
 
 If you don't need HTTP Spy anymore, then you need to stop it to free up
 resources it consumes:
