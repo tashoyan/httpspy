@@ -21,36 +21,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
-import org.junit.After;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Test;
 
-public class CamelJettyHttpSpyHeaderTest {
-
-    private static final String SPY_SERVER_HOST = "0.0.0.0";
-
-    private static final int SPY_SERVER_PORT = 47604;
-
-    private static final String SPY_SERVER_PATH = "/spyseverpath/";
-
-    private static final String SPY_SERVER_URL = "http://"
-            + SPY_SERVER_HOST + ":" + SPY_SERVER_PORT + SPY_SERVER_PATH;
-
-    private CamelJettyHttpSpy httpSpy;
-
-    @Before
-    public void before() throws Exception {
-        httpSpy =
-                new CamelJettyHttpSpy(SPY_SERVER_HOST, SPY_SERVER_PORT,
-                        SPY_SERVER_PATH);
-        httpSpy.start();
-    }
-
-    @After
-    public void after() throws Exception {
-        httpSpy.stop();
-    }
+public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void unexpectedHeaderValue() throws Exception {
