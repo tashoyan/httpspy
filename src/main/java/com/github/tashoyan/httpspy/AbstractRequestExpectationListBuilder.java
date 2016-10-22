@@ -15,6 +15,8 @@
  */
 package com.github.tashoyan.httpspy;
 
+import com.github.tashoyan.httpspy.matcher.JsonEqualMatcher;
+import com.github.tashoyan.httpspy.matcher.XmlEqualMatcher;
 import java.util.ArrayList;
 import java.util.List;
 import net.jcip.annotations.NotThreadSafe;

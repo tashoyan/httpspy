@@ -13,10 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.github.tashoyan.httpspy;
+package com.github.tashoyan.httpspy.matcher;
 
+import com.github.tashoyan.httpspy.HttpRequest;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
 import org.apache.commons.collections4.MapUtils;
@@ -25,50 +28,49 @@ import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Matcher to verify that a request does have the specified header.
+ * Matcher to verify that a request has only headers with specified names.
  * <p>
  * <b>Concurrency notes.</b> This class is immutable and thread safe.
  */
 @Immutable
 @ThreadSafe
-public class WithoutHeaderRequestMatcher extends TypeSafeMatcher<HttpRequest> {
+public class StrictHeadersMatcher extends TypeSafeMatcher<HttpRequest> {
 
-    private final String headerName;
+    private final Set<String> specifiedHeaders;
 
     /**
      * Creates new matcher.
      * 
-     * @param headerName Header name. If a request has a header with this name,
-     * then it does not match.
-     * @throws NullPointerException headerName is null.
-     * @throws IllegalArgumentException headerName is empty or blank.
+     * @param specifiedHeaders Specified set of header names. If a request has a
+     * header not from this set, then it does not match. Empty set means only
+     * requests without headers match.
+     * @throws NullPointerException specifiedHeaders is null.
      */
-    public WithoutHeaderRequestMatcher(String headerName) {
-        Validate.notBlank(headerName, "headerName must not be blank");
-        this.headerName = headerName;
+    public StrictHeadersMatcher(Set<String> specifiedHeaders) {
+        Validate.notNull(specifiedHeaders, "specifiedHeaders must not be null");
+        this.specifiedHeaders = Collections.unmodifiableSet(specifiedHeaders);
     }
 
     @Override
     public boolean matchesSafely(HttpRequest httpRequest) {
         Map<String, List<String>> actualHeaders = httpRequest.getHeaders();
         if (MapUtils.isEmpty(actualHeaders)) {
-            return true;
+            return specifiedHeaders.isEmpty();
         }
-        return !actualHeaders.containsKey(headerName);
+        return specifiedHeaders.size() == actualHeaders.keySet().size()
+                && specifiedHeaders.containsAll(actualHeaders.keySet());
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("[without header : ");
-        description.appendValue(headerName);
+        description.appendText("[strict headers : ");
+        description.appendValue(specifiedHeaders);
         description.appendText("]");
     }
 
     @Override
     public void describeMismatchSafely(HttpRequest httpRequest, Description description) {
         Map<String, List<String>> actualHeaders = httpRequest.getHeaders();
-        List<String> headerValues = actualHeaders.get(headerName);
-        description.appendText("was ").appendText(headerName).appendText(": ")
-                .appendValue(headerValues);
+        description.appendText("was ").appendValue(actualHeaders);
     }
 }

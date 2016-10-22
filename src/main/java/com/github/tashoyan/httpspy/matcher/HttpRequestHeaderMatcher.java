@@ -13,8 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.github.tashoyan.httpspy;
+package com.github.tashoyan.httpspy.matcher;
 
+import com.github.tashoyan.httpspy.HttpRequest;
+import com.github.tashoyan.httpspy.ValueExpectation;
 import java.util.List;
 import java.util.Map;
 import net.jcip.annotations.Immutable;

@@ -15,6 +15,10 @@
  */
 package com.github.tashoyan.httpspy;
 
+import com.github.tashoyan.httpspy.matcher.HttpRequestHeaderMatcher;
+import com.github.tashoyan.httpspy.matcher.HttpRequestMatcher;
+import com.github.tashoyan.httpspy.matcher.StrictHeadersMatcher;
+import com.github.tashoyan.httpspy.matcher.WithoutHeaderRequestMatcher;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

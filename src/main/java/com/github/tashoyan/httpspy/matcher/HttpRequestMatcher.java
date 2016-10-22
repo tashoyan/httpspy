@@ -13,8 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.github.tashoyan.httpspy;
+package com.github.tashoyan.httpspy.matcher;
 
+import com.github.tashoyan.httpspy.HttpRequest;
+import com.github.tashoyan.httpspy.ValueExpectation;
 import java.util.function.Function;
 import net.jcip.annotations.Immutable;
 import net.jcip.annotations.ThreadSafe;
@@ -50,7 +52,7 @@ public class HttpRequestMatcher extends TypeSafeMatcher<HttpRequest> {
      * @throws NullPointerException name is null.
      * @throws IllegalArgumentException name is empty or blank.
      */
-    protected HttpRequestMatcher(Function<HttpRequest, Object> attributeProvider,
+    public HttpRequestMatcher(Function<HttpRequest, Object> attributeProvider,
             ValueExpectation valueExpectation, String name) {
         Validate.notNull(attributeProvider, "attributeProvider must not be null");
         Validate.notNull(valueExpectation, "valueExpectation must not be null");
