@@ -19,7 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 
 public abstract class CamelJettyHttpSpyTestHarness {
-    
+
     protected static final String SPY_SERVER_HOST = "0.0.0.0";
 
     protected static final int SPY_SERVER_PORT = 47604;
@@ -43,6 +43,4 @@ public abstract class CamelJettyHttpSpyTestHarness {
     public void after() throws Exception {
         httpSpy.stop();
     }
-
-
 }

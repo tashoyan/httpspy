@@ -29,6 +29,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.http.common.HttpMessage;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Implementation of {@link HttpRequest} to use with {@link CamelJettyHttpSpy}.
@@ -123,5 +124,10 @@ public class CamelJettyHttpRequest implements HttpRequest {
         return CollectionUtils.isEmpty(values)
                 ? null
                 : Collections.unmodifiableList(values);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

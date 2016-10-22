@@ -214,7 +214,7 @@ limitations under the License.
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>${version.httpcore}</version>
-                <scope>test</scope>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
@@ -240,6 +241,42 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
                     + i).post(SPY_SERVER_URL);
             response.then().statusCode(200).body(is("response-"
                     + i));
+        }
+    }
+
+    @Test
+    public void moreRequestsThanExpectations() {
+        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+
+            @Override
+            public void build() {
+                expect(request().withBody(equalTo("one")));
+                expect(request().withBody(equalTo("two")));
+            }
+        });
+        Response response1 = with().body("one").post(SPY_SERVER_URL);
+        response1.then().statusCode(200);
+        Response response2 = with().body("two").post(SPY_SERVER_URL);
+        response2.then().statusCode(200);
+        Response response3 = with().body("three").post(SPY_SERVER_URL);
+        response3
+                .then()
+                .statusCode(500)
+                .body(allOf(containsString("No responses anymore"),
+                        containsString("exptected requests: 2"),
+                        containsString("actually received requests: 3"),
+                        containsString("actual request:"), containsString("three")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports about unexpected request",
+                    e.getMessage(),
+                    allOf(containsString("Number of actually received requests"),
+                            containsString(" 3"),
+                            containsString("number of request expected"),
+                            containsString(" 2")));
         }
     }
 

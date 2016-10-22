@@ -16,6 +16,7 @@
 package com.github.tashoyan.httpspy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.jcip.annotations.NotThreadSafe;
 import org.apache.camel.CamelContext;
@@ -25,6 +26,7 @@ import org.apache.camel.component.jetty9.JettyHttpComponent9;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
@@ -247,12 +249,16 @@ public class CamelJettyHttpSpy implements HttpSpy {
                         if (!responses.isEmpty()) {
                             response = (CamelJettyHttpResponse) responses.remove(0);
                         } else {
-                            throw new AssertionError(
+                            String msg =
                                     "No responses anymore; exptected requests: "
                                             + requestExpectations.size()
                                             + "; actually received requests: "
                                             + actualRequests.size()
-                                            + " actual request: " + actualRequest);
+                                            + " actual request: " + actualRequest;
+                            response =
+                                    new CamelJettyHttpResponse(
+                                            HttpStatus.SC_INTERNAL_SERVER_ERROR, msg,
+                                            Collections.emptyMap(), 0);
                         }
                     }
                     try {

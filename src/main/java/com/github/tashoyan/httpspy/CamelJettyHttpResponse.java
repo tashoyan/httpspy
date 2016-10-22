@@ -27,6 +27,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Implementation of {@link HttpResponse} to use with {@link CamelJettyHttpSpy}.
@@ -135,5 +136,10 @@ public class CamelJettyHttpResponse implements HttpResponse {
                         entry -> message.setHeader(entry.getKey(), entry.getValue()
                                 .stream().collect(Collectors.joining(","))));
         Thread.sleep(this.getDelayMillis());
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
