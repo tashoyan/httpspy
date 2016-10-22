@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
+import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CamelJettyHttpSpyHeaderTest {
@@ -36,6 +38,19 @@ public class CamelJettyHttpSpyHeaderTest {
             + SPY_SERVER_HOST + ":" + SPY_SERVER_PORT + SPY_SERVER_PATH;
 
     private CamelJettyHttpSpy httpSpy;
+
+    @Before
+    public void before() throws Exception {
+        httpSpy =
+                new CamelJettyHttpSpy(SPY_SERVER_HOST, SPY_SERVER_PORT,
+                        SPY_SERVER_PATH);
+        httpSpy.start();
+    }
+
+    @After
+    public void after() throws Exception {
+        httpSpy.stop();
+    }
 
     @Test
     public void unexpectedHeaderValue() throws Exception {
@@ -160,5 +175,4 @@ public class CamelJettyHttpSpyHeaderTest {
         response.then().statusCode(200).header("h1", "v1,v2,v3");
         httpSpy.verify();
     }
-
 }

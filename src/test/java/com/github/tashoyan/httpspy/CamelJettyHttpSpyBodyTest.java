@@ -130,5 +130,4 @@ public class CamelJettyHttpSpyBodyTest {
                             containsString("value3")));
         }
     }
-
 }
