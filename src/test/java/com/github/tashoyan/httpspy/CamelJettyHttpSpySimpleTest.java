@@ -424,7 +424,7 @@ public class CamelJettyHttpSpySimpleTest {
     }
 
     @Test
-    public void manyRequestsWithResponsesManyTimes() throws Exception {
+    public void sameRequestWithResponseManyTimes() throws Exception {
         int requestsNumber = 10;
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
@@ -452,26 +452,7 @@ public class CamelJettyHttpSpySimpleTest {
     }
 
     @Test
-    public void useSameSpyServerServeralTimes() throws Exception {
-        int reuseNumber = 5;
-        for (int i = 0; i < reuseNumber; i++) {
-            httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
-
-                @Override
-                public void build() {
-                    expect(request());
-                }
-            });
-            Response response = with().body("request-"
-                    + i).post(SPY_SERVER_URL);
-            response.then().statusCode(200);
-            httpSpy.verify();
-            httpSpy.reset();
-        }
-    }
-
-    @Test
-    public void expectRequestsSeveralTimes() {
+    public void manyRequestsWithResponsesInLoop() {
         int expectRequestsNumber = 5;
         for (int i = 0; i < expectRequestsNumber; i++) {
             String expectedBody = "request-"
@@ -492,6 +473,25 @@ public class CamelJettyHttpSpySimpleTest {
                     + i).post(SPY_SERVER_URL);
             response.then().statusCode(200).body(is("response-"
                     + i));
+        }
+    }
+
+    @Test
+    public void useSameSpyServerServeralTimes() throws Exception {
+        int reuseNumber = 5;
+        for (int i = 0; i < reuseNumber; i++) {
+            httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+
+                @Override
+                public void build() {
+                    expect(request());
+                }
+            });
+            Response response = with().body("request-"
+                    + i).post(SPY_SERVER_URL);
+            response.then().statusCode(200);
+            httpSpy.verify();
+            httpSpy.reset();
         }
     }
 }
