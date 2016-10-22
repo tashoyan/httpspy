@@ -27,7 +27,7 @@ import org.junit.Test;
 public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
-    public void oneRequestWithResponse() throws Exception {
+    public void oneRequestWithResponse() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -54,7 +54,7 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void oneRequestWithoutResponse() throws Exception {
+    public void oneRequestWithoutResponse() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -73,7 +73,7 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void emptyRequestExpectation() throws Exception {
+    public void emptyRequestExpectation() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -90,7 +90,7 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void manyRequestsAllWithResponses() throws Exception {
+    public void manyRequestsAllWithResponses() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -140,7 +140,7 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void manyRequestsSomeWithResponses() throws Exception {
+    public void manyRequestsSomeWithResponses() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -192,7 +192,7 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void sameRequestWithResponseManyTimes() throws Exception {
+    public void sameRequestWithResponseManyTimes() {
         int requestsNumber = 10;
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
@@ -281,7 +281,7 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void useSameSpyServerServeralTimes() throws Exception {
+    public void useSameSpyServerServeralTimes() {
         int reuseNumber = 5;
         for (int i = 0; i < reuseNumber; i++) {
             httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {

@@ -216,7 +216,7 @@ public class CamelJettyHttpSpy implements HttpSpy {
             camelContext.addRoutes(new RouteBuilder(camelContext) {
 
                 @Override
-                public void configure() throws Exception {
+                public void configure() {
                     from(
                             "jetty:http://"
                                     + getHostname() + ":" + getPort() + getPath()

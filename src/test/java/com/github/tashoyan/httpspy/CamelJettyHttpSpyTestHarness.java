@@ -32,7 +32,7 @@ public abstract class CamelJettyHttpSpyTestHarness {
     protected CamelJettyHttpSpy httpSpy;
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         httpSpy =
                 new CamelJettyHttpSpy(SPY_SERVER_HOST, SPY_SERVER_PORT,
                         SPY_SERVER_PATH);
@@ -40,7 +40,7 @@ public abstract class CamelJettyHttpSpyTestHarness {
     }
 
     @After
-    public void after() throws Exception {
+    public void after() {
         httpSpy.stop();
     }
 }

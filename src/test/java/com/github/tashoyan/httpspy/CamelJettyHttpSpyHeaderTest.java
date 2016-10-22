@@ -27,7 +27,7 @@ import org.junit.Test;
 public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
-    public void unexpectedHeaderValue() throws Exception {
+    public void unexpectedHeaderValue() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -81,7 +81,7 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void withoutHeader() throws Exception {
+    public void withoutHeader() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -106,7 +106,7 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void strictHeadersUnexpectedHeader() throws Exception {
+    public void strictHeadersUnexpectedHeader() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override

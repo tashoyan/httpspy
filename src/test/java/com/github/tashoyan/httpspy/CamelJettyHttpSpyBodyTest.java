@@ -24,7 +24,7 @@ import org.junit.Test;
 public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
-    public void bodyEqualToXml() throws Exception {
+    public void bodyEqualToXml() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -39,7 +39,7 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void bodyNotEqualToXml() throws Exception {
+    public void bodyNotEqualToXml() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -63,7 +63,7 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void bodyEqualToJson() throws Exception {
+    public void bodyEqualToJson() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override
@@ -80,7 +80,7 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void bodyNotEqualToJson() throws Exception {
+    public void bodyNotEqualToJson() {
         httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
 
             @Override

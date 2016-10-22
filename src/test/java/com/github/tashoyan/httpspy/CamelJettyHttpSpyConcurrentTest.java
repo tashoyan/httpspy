@@ -90,7 +90,7 @@ public class CamelJettyHttpSpyConcurrentTest {
     }
 
     private long runTest(int clientRequestsNumber, int serverThreadsNumber,
-            long executionTime) throws Exception {
+            long executionTime) throws InterruptedException {
         httpSpy = new CamelJettyHttpSpy(SPY_SERVER_PORT, SPY_SERVER_PATH);
         httpSpy.setServiceThreadsNumber(serverThreadsNumber);
         httpSpy.start();
