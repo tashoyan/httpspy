@@ -28,10 +28,10 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void unexpectedHeaderValue() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withHeader("h1", equalTo("v1")).andResponse(
                         response().withStatus(200)));
             }
@@ -53,10 +53,10 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void withHeaderAnyValue() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withHeader("h1"));
                 expect(request().withHeader("h2"));
             }
@@ -82,10 +82,10 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void withoutHeader() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withoutHeader("h1").andResponse(
                         response().withStatus(200)));
             }
@@ -107,10 +107,10 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void strictHeadersUnexpectedHeader() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withStrictHeaders().withHeader("h1", equalTo("v1"))
                         .andResponse(response().withStatus(200)));
             }
@@ -136,10 +136,10 @@ public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void responseHeaderMultipleValues() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().andResponse(
                         response().withStatus(200).withHeader("h1", "v1")
                                 .withHeader("h1", "v2").withHeader("h1", "v3")));

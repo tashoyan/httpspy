@@ -21,10 +21,9 @@ import org.hamcrest.Matcher;
 /**
  * Request expectation.
  * <p>
- * Provides expectations for a request received by {@link HttpSpy}. During
- * verification, the spy server compares every actual request received with its
- * expectation. In addition, expectation may declare how the spy server should
- * response on the request.
+ * Provides an expectation for a request received by {@link HttpSpy} from the
+ * system under test. During verification, the spy server will compare this
+ * expectation with the actual request.
  * <p>
  * <b>Concurrency notes.</b> User creates an object of this class when setting
  * expectations in the thread that runs the test - typically {@code main}

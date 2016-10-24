@@ -15,6 +15,8 @@
  */
 package com.github.tashoyan.httpspy;
 
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -123,5 +125,53 @@ public class CamelJettyHttpSpyConstructTest {
         httpSpy = new CamelJettyHttpSpy(13000, "pa/th");
         httpSpy.setServiceThreadsNumber(10);
         assertEquals("Service threads number", 10, httpSpy.getServiceThreadsNumber());
+    }
+
+    @Test
+    public void setSignleThreadedPlanWithManyServiceThreads() {
+        httpSpy = new CamelJettyHttpSpy(13000, "pa/th");
+        httpSpy.setServiceThreadsNumber(10);
+        TestPlanBuilder testPlanBuilder = createMock(TestPlanBuilder.class);
+        TestPlan testPlan = createMock(TestPlan.class);
+        expect(testPlanBuilder.build()).andReturn(testPlan).once();
+        expect(testPlan.isMultithreaded()).andReturn(false).anyTimes();
+        replay(testPlanBuilder, testPlan);
+        try {
+            httpSpy.testPlan(testPlanBuilder);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertThat(
+                    "Error message reports about test plan unsupporting multiple service threads",
+                    e.getMessage(),
+                    allOf(containsString("test plan "),
+                            containsString("does not support multiple service threads"),
+                            containsString(": 10")));
+        } finally {
+            verify(testPlanBuilder, testPlan);
+        }
+    }
+
+    @Test
+    public void setManyServiceThreadsWithSignleThreadedPlan() {
+        httpSpy = new CamelJettyHttpSpy(13000, "pa/th");
+        TestPlanBuilder testPlanBuilder = createMock(TestPlanBuilder.class);
+        TestPlan testPlan = createMock(TestPlan.class);
+        expect(testPlanBuilder.build()).andReturn(testPlan).once();
+        expect(testPlan.isMultithreaded()).andReturn(false).anyTimes();
+        replay(testPlanBuilder, testPlan);
+        httpSpy.testPlan(testPlanBuilder);
+        try {
+            httpSpy.setServiceThreadsNumber(10);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            assertThat(
+                    "Error message reports about test plan unsupporting multiple service threads",
+                    e.getMessage(),
+                    allOf(containsString("test plan "),
+                            containsString("does not support multiple service threads"),
+                            containsString(": 10")));
+        } finally {
+            verify(testPlanBuilder, testPlan);
+        }
     }
 }

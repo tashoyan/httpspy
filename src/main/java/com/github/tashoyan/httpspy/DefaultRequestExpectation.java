@@ -31,9 +31,6 @@ public class DefaultRequestExpectation implements RequestExpectation {
 
     /**
      * Constructs new instance of request expectation.
-     * <p>
-     * End user is not supposed to call this constructor and instead should call
-     * {@link RequestExpectationListBuilder#expect }.
      * 
      * @param requestMatcher Request matcher to check an actual request against
      * this expectation.

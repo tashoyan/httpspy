@@ -54,10 +54,6 @@ public class DefaultRequestExpectationBuilder implements RequestExpectationBuild
      * <p>
      * New instance matches any request and provides default response from
      * {@link DefaultResponseBuilder}.
-     * <p>
-     * End user is not supposed to call this constructor and instead should call
-     * {@link AbstractRequestExpectationListBuilder#request() } when implementing
-     * {@link AbstractRequestExpectationListBuilder#build() }.
      */
     protected DefaultRequestExpectationBuilder() {
         requestMatchers = new ArrayList<>(USUAL_SPECIFIED_MATCHERS_NUMBER);

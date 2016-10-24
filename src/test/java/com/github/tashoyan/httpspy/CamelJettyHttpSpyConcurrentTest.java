@@ -32,8 +32,11 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore(
+        value = "TODO This test is inapplicable for SequencePlan. Rework it for a multithreaded test plan.")
 public class CamelJettyHttpSpyConcurrentTest {
 
     private static final String TO_SPY_SERVER_ENDPOINT = "direct:to-spy-server";
@@ -94,10 +97,10 @@ public class CamelJettyHttpSpyConcurrentTest {
         httpSpy = new CamelJettyHttpSpy(SPY_SERVER_PORT, SPY_SERVER_PATH);
         httpSpy.setServiceThreadsNumber(serverThreadsNumber);
         httpSpy.start();
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(clientRequestsNumber,
                         request().andResponse(
                                 response().withDelay(TimeUnit.MILLISECONDS,
@@ -135,6 +138,7 @@ public class CamelJettyHttpSpyConcurrentTest {
                 - startTime.get();
         httpSpy.verify();
         httpSpy.stop();
+        httpSpy.reset();
         return totalExecutionTime;
     }
 

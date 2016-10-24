@@ -48,10 +48,6 @@ public class DefaultResponseBuilder implements ResponseBuilder {
      * Creates new builder instance.
      * <p>
      * New instance provides default response.
-     * <p>
-     * End user is not supposed to call this constructor and instead should call
-     * {@link RequestExpectationBuilder#andResponse } when implementing
-     * {@link AbstractRequestExpectationListBuilder#build() }.
      */
     protected DefaultResponseBuilder() {
         statusCode = HttpServletResponse.SC_OK;

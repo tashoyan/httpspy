@@ -28,10 +28,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void oneRequestWithResponse() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request()
                         .withBody(equalTo("<body>Hello</body>"))
                         .withHeader("h1", 0, equalTo("v1"))
@@ -55,10 +55,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void oneRequestWithoutResponse() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withBody(equalTo("<body>Hello</body>"))
                         .withHeader("h1", equalTo("v1")).withMethod(equalTo("POST"))
                         .withPath(equalTo(SPY_SERVER_PATH)));
@@ -74,10 +74,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void emptyRequestExpectation() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request());
             }
         });
@@ -91,10 +91,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void manyRequestsAllWithResponses() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request()
                         .withBody(
                                 matching(both(containsString("body")).and(
@@ -141,10 +141,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void manyRequestsSomeWithResponses() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request()
                         .withBody(
                                 matching(both(containsString("body")).and(
@@ -194,10 +194,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     @Test
     public void sameRequestWithResponseManyTimes() {
         int requestsNumber = 10;
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(requestsNumber,
                         request()
                                 .withBody(equalTo("<body>Hello</body>"))
@@ -222,20 +222,20 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     @Test
     public void manyRequestsWithResponsesInLoop() {
         int expectRequestsNumber = 5;
-        for (int i = 0; i < expectRequestsNumber; i++) {
-            String expectedBody = "request-"
-                    + i;
-            String responseBody = "response-"
-                    + i;
-            httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
-                @Override
-                public void build() {
+            @Override
+            public void compose() {
+                for (int i = 0; i < expectRequestsNumber; i++) {
+                    String expectedBody = "request-"
+                            + i;
+                    String responseBody = "response-"
+                            + i;
                     expect(request().withBody(equalTo(expectedBody)).andResponse(
                             response().withBody(responseBody)));
                 }
-            });
-        }
+            }
+        });
         for (int i = 0; i < expectRequestsNumber; i++) {
             Response response = with().body("request-"
                     + i).post(SPY_SERVER_URL);
@@ -246,10 +246,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void moreRequestsThanExpectations() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withBody(equalTo("one")));
                 expect(request().withBody(equalTo("two")));
             }
@@ -284,10 +284,10 @@ public class CamelJettyHttpSpySimpleTest extends CamelJettyHttpSpyTestHarness {
     public void useSameSpyServerServeralTimes() {
         int reuseNumber = 5;
         for (int i = 0; i < reuseNumber; i++) {
-            httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+            httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
                 @Override
-                public void build() {
+                public void compose() {
                     expect(request());
                 }
             });

@@ -25,10 +25,10 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void bodyEqualToXml() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withBody(equalToXml("<xml><color>red</color></xml>")));
             }
         });
@@ -40,10 +40,10 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void bodyNotEqualToXml() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withBody(equalToXml("<xml><color>red</color></xml>")));
             }
         });
@@ -64,10 +64,10 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void bodyEqualToJson() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withBody(
                         equalToJson("{\"value1\":\"1\", \"value2\":\"2\"}")));
             }
@@ -81,10 +81,10 @@ public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void bodyNotEqualToJson() {
-        httpSpy.expectRequests(new AbstractRequestExpectationListBuilder() {
+        httpSpy.testPlan(new AbstractSequencePlanBuilder() {
 
             @Override
-            public void build() {
+            public void compose() {
                 expect(request().withBody(
                         equalToJson("{\"value1\":\"1\", \"value2\":\"2\"}")));
             }

@@ -19,6 +19,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * stopped and hasn't test plan -> [started / has test plan] -> running tests ->
+ * running verification -> started and has test plan
+ */
 public class CamelJettyHttpSpyStateTest {
 
     private static final int SPY_SERVER_PORT = 47604;

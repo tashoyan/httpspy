@@ -15,20 +15,19 @@
  */
 package com.github.tashoyan.httpspy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import net.jcip.annotations.NotThreadSafe;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jetty9.JettyHttpComponent9;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.http.HttpStatus;
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 
 /**
  * Implementation of {@link HttpSpy} based on camel-jetty component.
@@ -50,8 +49,6 @@ public class CamelJettyHttpSpy implements HttpSpy {
      */
     protected static final int DEFAULT_SERVICE_THREADS_NUMBER = 1;
 
-    static final int DEFAULT_REQUESTS_NUMBER = 1000;
-
     private static final int JETTY_INTERNAL_THREADS_NUMBER = 8;
 
     private static final String PATH_SEPARATOR = "/";
@@ -72,14 +69,7 @@ public class CamelJettyHttpSpy implements HttpSpy {
 
     private boolean isStarted;
 
-    private final List<RequestExpectation> requestExpectations = new ArrayList<>(
-            DEFAULT_REQUESTS_NUMBER);
-
-    private final List<HttpRequest> actualRequests = new ArrayList<>(
-            DEFAULT_REQUESTS_NUMBER);
-
-    private final List<HttpResponse> responses = new ArrayList<>(
-            DEFAULT_REQUESTS_NUMBER);
+    private final AtomicReference<TestPlan> testPlan = new AtomicReference<>();
 
     /**
      * Creates new instance of spy server running on default host
@@ -181,6 +171,13 @@ public class CamelJettyHttpSpy implements HttpSpy {
         if (isStarted) {
             throw new IllegalStateException("Spy server has already started");
         }
+        TestPlan plan = testPlan.get();
+        if (plan != null
+                && !plan.isMultithreaded() && serviceThreadsNumber > 1) {
+            throw new IllegalArgumentException("Current test plan "
+                    + plan + " does not support multiple service threads: "
+                    + serviceThreadsNumber);
+        }
         this.serviceThreadsNumber = serviceThreadsNumber;
     }
 
@@ -190,14 +187,18 @@ public class CamelJettyHttpSpy implements HttpSpy {
     }
 
     @Override
-    public HttpSpy expectRequests(RequestExpectationListBuilder builder) {
-        builder.build();
-        Validate.isTrue(builder.getRequestExpectations().size() == builder
-                .getResponses().size(),
-                "requestExpectations and responses must have the same size");
-        this.requestExpectations.addAll(builder.getRequestExpectations());
-        this.responses.addAll(builder.getResponses());
-        this.actualRequests.clear();
+    public HttpSpy testPlan(TestPlanBuilder testPlanBuilder) {
+        Validate.notNull(testPlanBuilder, "testPlanBuilder must not be null");
+        TestPlan plan = testPlanBuilder.build();
+        if (!plan.isMultithreaded()
+                && serviceThreadsNumber > 1) {
+            throw new IllegalArgumentException("New test plan "
+                    + plan + " does not support multiple service threads: "
+                    + serviceThreadsNumber);
+        }
+        if (!testPlan.compareAndSet(null, plan)) {
+            throw new IllegalStateException("Test plan is already set");
+        }
         return this;
     }
 
@@ -235,78 +236,75 @@ public class CamelJettyHttpSpy implements HttpSpy {
      * send responses back.
      * 
      * @return Processor instance.
-     * @throws AssertionError No response available for an actual requests. This
-     * happens when the number of actual requests is greater, than the number of
-     * expected requests and responses.
+     * @throws IllegalStateException Test plan is not set.
      */
     protected Processor createSpyProcessor() {
-        Processor processor =
-                exchange -> {
-                    HttpRequest actualRequest = new CamelJettyHttpRequest(exchange);
-                    CamelJettyHttpResponse response;
-                    synchronized (CamelJettyHttpSpy.this) {
-                        actualRequests.add(actualRequest);
-                        if (!responses.isEmpty()) {
-                            response = (CamelJettyHttpResponse) responses.remove(0);
-                        } else {
-                            String msg =
-                                    "No responses anymore; exptected requests: "
-                                            + requestExpectations.size()
-                                            + "; actually received requests: "
-                                            + actualRequests.size()
-                                            + " actual request: " + actualRequest;
-                            response =
-                                    new CamelJettyHttpResponse(
-                                            HttpStatus.SC_INTERNAL_SERVER_ERROR, msg,
-                                            Collections.emptyMap(), 0);
-                        }
-                    }
-                    try {
-                        response.sendInExchange(exchange);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        throw e;
-                    }
-                };
+        Processor processor = exchange -> {
+            if (testPlan.get() == null) {
+                throw new IllegalStateException("Test plan is not set");
+            }
+            HttpRequest actualRequest = new CamelJettyHttpRequest(exchange);
+            HttpResponse response = testPlan.get().getResponse(actualRequest);
+            try {
+                sendResponseInExchange(response, exchange);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+        };
         return processor;
+    }
+
+    /**
+     * Send the response in Camel exchange.
+     * <p>
+     * This implementation sends response body in platform default encoding.
+     * <p>
+     * If the response has multiple headers with the same name, then this method
+     * follows RFC 2616, Section 4.2 Message Headers: combine all values into
+     * one string of comma-separated values.
+     * 
+     * @param response The response to send.
+     * @param exchange Send the response as Out message within this exchange
+     * object. Out message allows to drop all headers came with In message.
+     * @throws NullPointerException response is null, exchange is null.
+     * @throws InterruptedException Interrupted while waiting the delay,
+     * specified for the response.
+     * @see HttpResponse#getDelayMillis()
+     */
+    protected void sendResponseInExchange(HttpResponse response, Exchange exchange)
+            throws InterruptedException {
+        Validate.notNull(response, "response must not be null");
+        Validate.notNull(exchange, "exchange must not be null");
+        Message message = exchange.getOut();
+        message.setHeader(Exchange.HTTP_RESPONSE_CODE, response.getStatusCode());
+        message.setHeader(Exchange.HTTP_CHARACTER_ENCODING, Charset.defaultCharset()
+                .name());
+        message.setBody(response.getBody(), String.class);
+        response.getHeaders()
+                .entrySet()
+                .forEach(
+                        entry -> message.setHeader(entry.getKey(), entry.getValue()
+                                .stream().collect(Collectors.joining(","))));
+        Thread.sleep(response.getDelayMillis());
     }
 
     @Override
     public void verify() {
-        int actualRequestsNumber;
-        synchronized (this) {
-            actualRequestsNumber = actualRequests.size();
+        if (testPlan.get() == null) {
+            throw new IllegalStateException("Test plan is not set");
         }
-        if (requestExpectations.size() != actualRequestsNumber) {
-            throw new AssertionError("Number of actually received requests "
-                    + actualRequestsNumber
-                    + " should equal the number of request expected "
-                    + requestExpectations.size());
-        }
-        int i = 0;
-        for (RequestExpectation requestExpectation : requestExpectations) {
-            Matcher<HttpRequest> requestMatcher =
-                    requestExpectation.getRequestMatcher();
-            HttpRequest actualRequest = actualRequests.get(i);
-            MatcherAssert.assertThat("Request #"
-                    + i + " should match expectation", actualRequest, requestMatcher);
-            i++;
-        }
+        testPlan.get().verify();
     }
 
     @Override
     public void reset() {
-        synchronized (this) {
-            requestExpectations.clear();
-            actualRequests.clear();
-            responses.clear();
-        }
+        testPlan.set(null);
     }
 
     @Override
     public void stop() {
         isStarted = false;
-        reset();
         try {
             camelContext.stop();
             camelContext.removeRoute(SPY_ROUTE_NAME);

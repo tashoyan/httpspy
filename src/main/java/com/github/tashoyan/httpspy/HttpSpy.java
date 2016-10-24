@@ -25,11 +25,7 @@ import net.jcip.annotations.NotThreadSafe;
  * <b>Concurrency notes.</b> All HTTP Spy methods are expected to be called in
  * the only thread - typically {@code main} thread that executes a test.
  * However, an implementation has to provide concurrent access to some data
- * inside, for example:
- * <ul>
- * <li>the list of request expectations;
- * <li>the list of recorded actual requests.
- * </ul>
+ * inside, for example the test plan: {@link #testPlan}.
  */
 @NotThreadSafe
 public interface HttpSpy {
@@ -63,7 +59,9 @@ public interface HttpSpy {
      * implementation, the real number of servicing threads may be greater.
      * 
      * @param serviceThreadsNumber Number of threads that service requests.
-     * @throws IllegalArgumentException threadsNumber is not positive.
+     * @throws IllegalArgumentException serviceThreadsNumber is not positive.
+     * @throws IllegalArgumentException serviceThreadsNumber is greater than
+     * one, but current test plan does not support multiple service threads.
      * @throws IllegalStateException The spy server has already started.
      */
     void setServiceThreadsNumber(int serviceThreadsNumber);
@@ -76,14 +74,17 @@ public interface HttpSpy {
     int getServiceThreadsNumber();
 
     /**
-     * Sets request expectation.
+     * Specify test plan.
      * 
-     * @param builder Builder for the list of request expectations.
-     * @return This object.
-     * @throws IllegalArgumentException builder is null, or builder has lists of
-     * different sizes for request expectations and responses.
+     * @param testPlanBuilder Builder that provides the test plan.
+     * @return This object
+     * @throws NullPointerException testPlanBuilder is null.
+     * @throws IllegalStateException Test plan is already set.
+     * @throws IllegalArgumentException New test plan does not support multiple
+     * service threads, but service threads number is already set greater than
+     * one.
      */
-    HttpSpy expectRequests(RequestExpectationListBuilder builder);
+    HttpSpy testPlan(TestPlanBuilder testPlanBuilder);
 
     /**
      * Start the spy server.
@@ -96,14 +97,20 @@ public interface HttpSpy {
 
     /**
      * Verify that expectations are met.
+     * <p>
+     * This method delegates verification to the test plan.
+     * 
+     * @throws IllegalStateException Test plan is not set
+     * @see #testPlan
      */
     void verify();
 
     /**
      * Reset the spy server.
      * <p>
-     * The spy server resets all request expectations along with actual requests
-     * received and responses.
+     * The spy server resets its current test plan.
+     * 
+     * @see #testPlan
      */
     void reset();
 
@@ -111,9 +118,7 @@ public interface HttpSpy {
      * Stop the spy server.
      * <p>
      * The spy server stops servicing client requests and frees network
-     * resources. The spy server also resets itself.
-     * 
-     * @see #reset()
+     * resources.
      */
     void stop();
 }

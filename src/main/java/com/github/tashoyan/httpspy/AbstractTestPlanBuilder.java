@@ -17,78 +17,23 @@ package com.github.tashoyan.httpspy;
 
 import com.github.tashoyan.httpspy.matcher.JsonEqualMatcher;
 import com.github.tashoyan.httpspy.matcher.XmlEqualMatcher;
-import java.util.ArrayList;
-import java.util.List;
 import net.jcip.annotations.NotThreadSafe;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Abstract class that has implementations for almost all methods of
- * {@link RequestExpectationListBuilder}.
- * <p>
- * User has nothing to implement but {@link #build() } method.
+ * Common functions for all test plan builders.
  */
 @NotThreadSafe
-public abstract class AbstractRequestExpectationListBuilder
-        implements RequestExpectationListBuilder {
-
-    private final List<RequestExpectation> requestExpectations = new ArrayList<>(
-            CamelJettyHttpSpy.DEFAULT_REQUESTS_NUMBER);
-
-    private final List<HttpResponse> responses = new ArrayList<>(
-            CamelJettyHttpSpy.DEFAULT_REQUESTS_NUMBER);
-
-    @Override
-    public List<RequestExpectation> getRequestExpectations() {
-        return requestExpectations;
-    }
-
-    @Override
-    public List<HttpResponse> getResponses() {
-        return responses;
-    }
-
-    @Override
-    public void expect(RequestExpectationBuilder requestExpectationBuilder) {
-        Validate.notNull(requestExpectationBuilder,
-                "requestExpectationBuilder must not be null");
-        RequestExpectation requestExpectation = requestExpectationBuilder.build();
-        ResponseBuilder responseBuilder =
-                requestExpectationBuilder.getResponseBuilder();
-        HttpResponse response = responseBuilder.build();
-        requestExpectations.add(requestExpectation);
-        responses.add(response);
-    }
+public abstract class AbstractTestPlanBuilder implements TestPlanBuilder {
 
     /**
-     * Expect the same request multiple times.
-     * <p>
-     * A convenience method instead of calling
-     * {@link #expect(RequestExpectationBuilder) } multiple times.
-     * 
-     * @param times Number of sequential requests with the same expectation.
-     * @param requestExpectationBuilder Request expectation builder.
-     * @throws NullPointerException requestExpectationBuilder is null.
-     * @throws IllegalArgumentException times is not positive.
+     * Default number of expected requests.
      */
-    public void expect(int times, RequestExpectationBuilder requestExpectationBuilder) {
-        Validate.isTrue(times > 0, "times must be positive");
-        Validate.notNull(requestExpectationBuilder,
-                "requestExpectationBuilder must not be null");
-        RequestExpectation requestExpectation = requestExpectationBuilder.build();
-        ResponseBuilder responseBuilder =
-                requestExpectationBuilder.getResponseBuilder();
-        HttpResponse response = responseBuilder.build();
-        for (int i = 0; i < times; i++) {
-            requestExpectations.add(requestExpectation);
-            responses.add(response);
-        }
-    }
+    protected static final int DEFAULT_REQUESTS_NUMBER = 1000;
 
     @Override
     public RequestExpectationBuilder request() {
