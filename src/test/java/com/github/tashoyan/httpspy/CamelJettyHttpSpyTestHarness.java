@@ -42,5 +42,6 @@ public abstract class CamelJettyHttpSpyTestHarness {
     @After
     public void after() {
         httpSpy.stop();
+        httpSpy.reset();
     }
 }

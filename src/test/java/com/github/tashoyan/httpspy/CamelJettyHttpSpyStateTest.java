@@ -15,7 +15,10 @@
  */
 package com.github.tashoyan.httpspy;
 
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.CoreMatchers.*;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +42,7 @@ public class CamelJettyHttpSpyStateTest {
     @After
     public void stopSpyServer() {
         httpSpy.stop();
+        httpSpy.reset();
     }
 
     @Test(expected = IllegalStateException.class)
@@ -58,5 +62,37 @@ public class CamelJettyHttpSpyStateTest {
     public void setServiceThreadsNumberAlreadyStarted() {
         httpSpy.start();
         httpSpy.setServiceThreadsNumber(10);
+    }
+
+    @Test
+    public void setTestPlanAlreadyHasTestPlan() {
+        TestPlanBuilder testPlanBuilder = createMock(TestPlanBuilder.class);
+        TestPlan testPlan = createMock(TestPlan.class);
+        expect(testPlanBuilder.build()).andReturn(testPlan).times(2);
+        expect(testPlan.isMultithreaded()).andReturn(true).anyTimes();
+        replay(testPlanBuilder, testPlan);
+        httpSpy.testPlan(testPlanBuilder);
+        try {
+            httpSpy.testPlan(testPlanBuilder);
+            fail("IllegalStateException expected");
+        } catch (IllegalStateException e) {
+            assertThat("Error message reports that test plan is already set",
+                    e.getMessage(), containsString("is already set"));
+        } finally {
+            verify(testPlanBuilder, testPlan);
+        }
+    }
+
+    @Test
+    public void reset() {
+        TestPlanBuilder testPlanBuilder = createMock(TestPlanBuilder.class);
+        TestPlan testPlan = createMock(TestPlan.class);
+        expect(testPlanBuilder.build()).andReturn(testPlan).times(2);
+        expect(testPlan.isMultithreaded()).andReturn(true).anyTimes();
+        replay(testPlanBuilder, testPlan);
+        httpSpy.testPlan(testPlanBuilder);
+        httpSpy.reset();
+        httpSpy.testPlan(testPlanBuilder);
+        verify(testPlanBuilder, testPlan);
     }
 }
