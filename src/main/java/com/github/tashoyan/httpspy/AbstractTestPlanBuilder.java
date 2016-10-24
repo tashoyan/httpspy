@@ -26,9 +26,12 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Common functions for all test plan builders.
+ * 
+ * @param <T> Type of the test plan to build.
  */
 @NotThreadSafe
-public abstract class AbstractTestPlanBuilder implements TestPlanBuilder {
+public abstract class AbstractTestPlanBuilder<T extends TestPlan>
+        implements TestPlanBuilder {
 
     /**
      * Default number of expected requests.
@@ -44,6 +47,9 @@ public abstract class AbstractTestPlanBuilder implements TestPlanBuilder {
     public ResponseBuilder response() {
         return new DefaultResponseBuilder();
     }
+
+    @Override
+    public abstract T build();
 
     /**
      * Creates {equal to XML} value expectation.

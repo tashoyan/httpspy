@@ -22,7 +22,8 @@ import org.apache.commons.lang3.Validate;
 /**
  * Builder for {@link SequencePlan}.
  */
-public abstract class AbstractSequencePlanBuilder extends AbstractTestPlanBuilder {
+public abstract class AbstractSequencePlanBuilder
+        extends AbstractTestPlanBuilder<SequencePlan> {
 
     private final List<RequestExpectation> requestExpectations = new ArrayList<>(
             DEFAULT_REQUESTS_NUMBER);
@@ -78,7 +79,7 @@ public abstract class AbstractSequencePlanBuilder extends AbstractTestPlanBuilde
     }
 
     @Override
-    public TestPlan build() {
+    public SequencePlan build() {
         this.compose();
         return new SequencePlan(requestExpectations, responses);
     }
