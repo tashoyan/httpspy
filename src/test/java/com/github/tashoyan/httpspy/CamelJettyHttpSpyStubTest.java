@@ -40,36 +40,78 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void stubBody() {
+    public void methodUnmatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
             public void compose() {
-                expect(request().withBody(equalTo("<body>Hello</body>")).andResponse(
-                        response().withBody("<body>Fine</body>")));
+                expect(request().withMethod(equalToIgnoreCase("get")).andResponse(
+                        response().withBody("Fine")));
             }
         });
-        /* body (matching), method. */
-        Response response = with().body("<body>Hello</body>").post(SPY_SERVER_URL);
-        response.then().statusCode(200).body(is("<body>Fine</body>"));
-        /* body (matching), another method. */
-        response = with().body("<body>Hello</body>").get(SPY_SERVER_URL);
-        response.then().statusCode(200).body(is("<body>Fine</body>"));
-        /* body (unmatching), method, header. */
-        response =
-                with().body("<body>Goodbye</body>").header("h1", "v1")
-                        .get(SPY_SERVER_URL);
+        Response response = with().post(SPY_SERVER_URL);
+        response.then()
+                .statusCode(500)
+                .body(allOf(containsString("Unmatched request"),
+                        containsString("method=POST")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports all unexpected requests",
+                    e.getMessage(),
+                    allOf(containsString("Unmatched requests received"),
+                            containsString("method=POST")));
+        }
+    }
+
+    @Test
+    public void pathMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withPath(equalTo(SPY_SERVER_PATH)).andResponse(
+                        response().withBody("Fine")));
+            }
+        });
+        Response response = with().get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Fine"));
+        httpSpy.verify();
+    }
+
+    @Test
+    public void bodyMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withBody(matching(containsString("Hello")))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response = with().body("Hello world").get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Fine"));
+        httpSpy.verify();
+    }
+
+    @Test
+    public void bodyUnmatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withBody(matching(containsString("Hello")))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response = with().body("Farewell").get(SPY_SERVER_URL);
         response.then()
                 .statusCode(500)
                 .body(allOf(containsString("Unmatched request"),
                         containsString("method=GET"), containsString("path="
-                                + SPY_SERVER_PATH),
-                        containsString("<body>Goodbye</body>")));
-        /* body (matching), method, header. */
-        response =
-                with().body("<body>Hello</body>").header("h1", "v1")
-                        .get(SPY_SERVER_URL);
-        response.then().statusCode(200).body(is("<body>Fine</body>"));
+                                + SPY_SERVER_PATH), containsString("Farewell")));
         try {
             httpSpy.verify();
             fail("AssertionError expected");
@@ -79,8 +121,53 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
                     e.getMessage(),
                     allOf(containsString("Unmatched requests received"),
                             containsString("method=GET"), containsString("path="
-                                    + SPY_SERVER_PATH),
-                            containsString("<body>Goodbye</body>")));
+                                    + SPY_SERVER_PATH), containsString("Farewell")));
+        }
+    }
+
+    @Test
+    public void headersMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withHeader("h1", equalTo("v1")).andResponse(
+                        response().withBody("Fine")));
+            }
+        });
+        Response response = with().header("h1", "v1").get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Fine"));
+        httpSpy.verify();
+    }
+
+    @Test
+    public void headersUnmatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withHeader("h1", equalTo("v1")).andResponse(
+                        response().withBody("Fine")));
+            }
+        });
+        Response response = with().header("h1", "v2").get(SPY_SERVER_URL);
+        response.then()
+                .statusCode(500)
+                .body(allOf(containsString("Unmatched request"),
+                        containsString("method=GET"), containsString("path="
+                                + SPY_SERVER_PATH), containsString("h1"),
+                        containsString("v2")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports all unexpected requests",
+                    e.getMessage(),
+                    allOf(containsString("Unmatched requests received"),
+                            containsString("method=GET"), containsString("path="
+                                    + SPY_SERVER_PATH), containsString("h1"),
+                            containsString("v2")));
         }
     }
 }
