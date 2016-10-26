@@ -25,7 +25,7 @@ import org.junit.Test;
 public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
-    public void methodMatch() {
+    public void methodExpected_MethodMatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -40,7 +40,7 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void methodUnmatch() {
+    public void methodExpected_MethodUnmatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -67,7 +67,7 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void pathMatch() {
+    public void pathExpected_PathMatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -82,7 +82,7 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void bodyMatch() {
+    public void bodyExpected_BodyMatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -97,7 +97,7 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void bodyUnmatch() {
+    public void bodyExpected_BodyUnmatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -126,7 +126,7 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void headersMatch() {
+    public void headersExpected_HeadersMatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -141,7 +141,7 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
     }
 
     @Test
-    public void headersUnmatch() {
+    public void headersExpected_HeadersUnmatch() {
         httpSpy.testPlan(new AbstractStubPlanBuilder() {
 
             @Override
@@ -168,6 +168,124 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
                             containsString("method=GET"), containsString("path="
                                     + SPY_SERVER_PATH), containsString("h1"),
                             containsString("v2")));
+        }
+    }
+
+    @Test
+    public void allFeaturesExpected_MethodMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withMethod(equalTo("GET"))
+                        .withPath(equalTo(SPY_SERVER_PATH)).withBody(equalTo("Hello"))
+                        .withHeader("h1", equalTo("v1"))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response = with().get(SPY_SERVER_URL);
+        response.then()
+                .statusCode(500)
+                .body(allOf(containsString("Unmatched request"),
+                        containsString("method=GET")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports all unexpected requests",
+                    e.getMessage(),
+                    allOf(containsString("Unmatched requests received"),
+                            containsString("method=GET")));
+        }
+    }
+
+    @Test
+    public void allFeaturesExpected_PathMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withMethod(equalTo("GET"))
+                        .withPath(equalTo(SPY_SERVER_PATH)).withBody(equalTo("Hello"))
+                        .withHeader("h1", equalTo("v1"))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response = with().post(SPY_SERVER_URL);
+        response.then()
+                .statusCode(500)
+                .body(allOf(containsString("Unmatched request"),
+                        containsString("method=POST")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports all unexpected requests",
+                    e.getMessage(),
+                    allOf(containsString("Unmatched requests received"),
+                            containsString("method=POST")));
+        }
+    }
+
+    @Test
+    public void allFeaturesExpected_BodyMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withMethod(equalTo("GET"))
+                        .withPath(equalTo(SPY_SERVER_PATH)).withBody(equalTo("Hello"))
+                        .withHeader("h1", equalTo("v1"))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response = with().body("Hello").post(SPY_SERVER_URL);
+        response.then()
+                .statusCode(500)
+                .body(allOf(containsString("Unmatched request"),
+                        containsString("method=POST"), containsString("Hello")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports all unexpected requests",
+                    e.getMessage(),
+                    allOf(containsString("Unmatched requests received"),
+                            containsString("method=POST"), containsString("Hello")));
+        }
+    }
+
+    @Test
+    public void allFeaturesExpected_HeadersMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withMethod(equalTo("GET"))
+                        .withPath(equalTo(SPY_SERVER_PATH)).withBody(equalTo("Hello"))
+                        .withHeader("h1", equalTo("v1"))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response = with().header("h1", "v1").post(SPY_SERVER_URL);
+        response.then()
+                .statusCode(500)
+                .body(allOf(containsString("Unmatched request"),
+                        containsString("method=POST"), containsString("h1"),
+                        containsString("v1")));
+        try {
+            httpSpy.verify();
+            fail("AssertionError expected");
+        } catch (AssertionError e) {
+            assertThat(
+                    "Error message reports all unexpected requests",
+                    e.getMessage(),
+                    allOf(containsString("Unmatched requests received"),
+                            containsString("method=POST"), containsString("h1"),
+                            containsString("v1")));
         }
     }
 }
