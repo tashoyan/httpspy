@@ -288,4 +288,22 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
                             containsString("v1")));
         }
     }
+
+    @Test
+    public void allFeaturesExpected_AllFeaturesMatch() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withMethod(equalTo("GET"))
+                        .withPath(equalTo(SPY_SERVER_PATH)).withBody(equalTo("Hello"))
+                        .withHeader("h1", equalTo("v1"))
+                        .andResponse(response().withBody("Fine")));
+            }
+        });
+        Response response =
+                with().body("Hello").header("h1", "v1").get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Fine"));
+        httpSpy.verify();
+    }
 }
