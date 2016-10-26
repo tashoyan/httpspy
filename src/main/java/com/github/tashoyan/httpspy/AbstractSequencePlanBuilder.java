@@ -17,11 +17,13 @@ package com.github.tashoyan.httpspy;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.jcip.annotations.NotThreadSafe;
 import org.apache.commons.lang3.Validate;
 
 /**
  * Builder for {@link SequencePlan}.
  */
+@NotThreadSafe
 public abstract class AbstractSequencePlanBuilder
         extends AbstractTestPlanBuilder<SequencePlan> {
 

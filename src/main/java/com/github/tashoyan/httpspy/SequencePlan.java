@@ -34,7 +34,7 @@ import org.hamcrest.MatcherAssert;
  * Method {@link #getResponse } returns responses in the sequence defined during
  * the test plan build. The system under test may send more actual requests,
  * than the plan expects. In this case, method {@link #getResponse } returns a
- * special response with "Internal server error" status code for all extra
+ * special response with {@code Internal server error} status code for all extra
  * actual requests. Method {@link #createMissingResponse } can be overridden to
  * change this behavior. Finally, verification reports a failure.
  * <p>
@@ -91,6 +91,9 @@ public class SequencePlan implements TestPlan {
     /**
      * Creates a special response when the number of actual requests exceeds the
      * number of request expectations.
+     * <p>
+     * This implementation responds with {@code Internal server error} status
+     * code.
      * 
      * @param actualRequest Actual request.
      * @return Response. Never returns null.
