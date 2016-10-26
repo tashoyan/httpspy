@@ -121,3 +121,7 @@ For different options to set request expectations, see Javadoc of methods in
 `AbstractRequestExpectationListBuilder` class.
 
 For response options, see Javadoc of methods in `ResponseBuilder` interface.
+
+//TODO Describe stub test plan
+//TODO Describe sequence test plan
+//TODO Describe strict headers
