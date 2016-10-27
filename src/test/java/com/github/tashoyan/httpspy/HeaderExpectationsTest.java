@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class CamelJettyHttpSpyHeaderTest extends CamelJettyHttpSpyTestHarness {
+public class HeaderExpectationsTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void unexpectedHeaderValue() {

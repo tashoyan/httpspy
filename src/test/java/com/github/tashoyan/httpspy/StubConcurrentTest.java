@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CamelJettyHttpSpyConcurrentTest {
+public class StubConcurrentTest {
 
     private static final String TO_SPY_SERVER_ENDPOINT = "direct:to-spy-server";
 
@@ -50,9 +50,7 @@ public class CamelJettyHttpSpyConcurrentTest {
 
     @BeforeClass
     public static void useProductionLogging() {
-        URL config =
-                CamelJettyHttpSpyConcurrentTest.class
-                        .getResource("log4j-production.xml");
+        URL config = StubConcurrentTest.class.getResource("log4j-production.xml");
         System.out.println("Setting production logging: "
                 + config.getFile());
         LogManager.resetConfiguration();

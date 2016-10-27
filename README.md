@@ -101,7 +101,7 @@ expectations as you wish and a desired response for every expectation.
 A request unmatched to all specified expectation is recorded. During verification,
 HTTP Spy lists all unmatched requests and reports a failure if there are any.
 
-This a multithreaded test plan, so you can run HTTP Spy with many servicing threads.
+This a multi-threaded test plan, so you can run HTTP Spy with many servicing threads.
 
 Below is an example of `StubPlan` usage.
 
@@ -169,7 +169,7 @@ instance though with new test plan in the next test:
 ### Checking request order
 
 `SequencePlan` is a special test plan for HTTP Spy to allow check requests order.
-The important thing to know about this test plan is that it is not multithreaded.
+The important thing to know about this test plan is that it is not multi-threaded.
 You cannot use `SequencePlan` when you have multiple servicing threads in HTTP Spy.
 The reason is that there is no order guarantee when the server processes requests
 in multiple threads.
@@ -218,11 +218,11 @@ test plan. The rest of usage is the same as for `StubPlan`.
 
 For usage examples, see unit tests:
 
-* `CamelJettyHttpSpySimpleTest`: various scenarios with `SequencePlan`
-* `CamelJettyHttpSpyStubTest`: various scenarios with `StubPlan`
-* `CamelJettyHttpSpyBodyTest`: various different examples on setting request body expectations
-* `CamelJettyHttpSpyHeaderTest`: various different examples on setting request headers expectations
-* `CamelJettyHttpSpyConcurrentTest`: multi-threaded scenarios with `StubPlan`
+* `SequenceTest`: various scenarios with `SequencePlan`
+* `StubSimpleTest`: single-threaded scenarios with `StubPlan`
+* `BodyExpectationsTest`: various different examples on setting request body expectations
+* `HeaderExpectationsTest`: various different examples on setting request headers expectations
+* `StubConcurrentTest`: multi-threaded scenarios with `StubPlan`
 
 ## Additional documentation
 

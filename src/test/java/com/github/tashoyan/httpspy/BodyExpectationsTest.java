@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class CamelJettyHttpSpyBodyTest extends CamelJettyHttpSpyTestHarness {
+public class BodyExpectationsTest extends CamelJettyHttpSpyTestHarness {
 
     @Test
     public void bodyEqualToXml() {
