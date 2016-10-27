@@ -89,6 +89,7 @@ limitations under the License.
         <version.geronimo-servlet_3.0_spec>1.0</version.geronimo-servlet_3.0_spec>
         <version.camel>2.17.3</version.camel>
         <version.slf4j>1.7.21</version.slf4j>
+        <!--TODO Upgrade to version 3-->
         <version.rest-assured>2.9.0</version.rest-assured>
         <version.junit>4.12</version.junit>
         <version.easymock>3.4</version.easymock>
