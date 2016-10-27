@@ -38,15 +38,61 @@ This version of HTTP Spy is implemented with [Camel Jetty](http://camel.apache.o
 
 ## Usage
 
+
+### Linking
+
 First, you need to declare a Maven dependency on HTTP Spy:
 
     <groupId>com.github.tashoyan</groupId>
     <artifactId>httpspy</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <scope>test</scope>
 
 The dependency scope is `test` because normally you use HTTP Spy in unit tests
 only.
+
+### HTTP Spy lifecycle
+
+The picture below shows the lifecycle of HTTP Spy.
+
+![HTTP Spy lifecycle](./images/lifecycle.png)
+
+To start executing your test, you need to
+
+* Start HTTP Spy
+* Set a test plan (see below)
+
+You can do these two steps in any order. After HTTP Spy is started and has
+a test plan, you can execute your test with actual requests.
+
+As soon as test requests are executed, you switch HTTP Spy to the verification
+phase. During verification, HTTP Spy checks actual requests it received against
+the request expectations specified by the test plan. In case of a mismatch,
+verification fails with an error.
+
+After verification phase, you can reset HTTP Spy and then set a new test plan.
+If you are done with your tests, then you have to stop HTTP Spy to clean up
+resources it consumes.
+
+Some good practices:
+
+* Start HTTP Spy in a method annotated as `@Before` or `@BeforeClass`
+* Stop HTTP Spy in a method annotated as `@After` or `@AfterClass`
+* Verify actual requests in a method annotated as `@After` or in a test method
+immediately after all requests are executed
+
+Here is the reference of HTTP Spy methods controlling the lifecycle:
+
+Method  | Description
+------- | -----------
+start() | Start HTTP Spy
+testPlan() | Set a test plan
+verify() | Verify actual requests against expectations
+reset() | Reset the current test plan in order to set new test plan
+stop() | Stop HTTP Spy
+
+
+TODO Complete
 
 Start HTTP Spy instance on `0.0.0.0` network interface, on port number `47604`
 and let it service requests on HTTP path `/spyseverpath`:
