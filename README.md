@@ -6,17 +6,18 @@ _For definition of test spy and how it differs from mock object, see
 [xUnit Patters web page](http://xunitpatterns.com/Mocks,%20Fakes,%20Stubs%20and%20Dummies.html)._
 
 When setting test expectations, you program HTTP Spy what HTTP requests to
-expect. For example, you can set up expectations on the following client
-actions:
+expect from your system under test (SUT). For example, you can set up
+expectations on the following SUT behavior:
 
 * Total number of requests
 * Order of requests
-* Request body, headers
+* Request body content
+* Request header value
 * Request method (POST/GET etc.)
 
 In addition, you may instruct HTTP Spy which response it should send on each
 incoming request. After expectations are set, you start HTTP Spy and run your
-HTTP client under test. Finally, you instruct HTTP Spy to verify all requests
+HTTP system under test. Finally, you instruct HTTP Spy to verify all requests
 it received.
 
 HTTP Spy runs on a local network interface. It is possible to configure network
@@ -33,8 +34,6 @@ values, as well as on HTTP method and path:
 * String matches by means of [Hamcrest matcher](http://hamcrest.org/)
 * XML is identical
 * JSON is identical
-
-This version of HTTP Spy is implemented with [Camel Jetty](http://camel.apache.org/jetty.html).
 
 ## Usage
 
@@ -74,7 +73,7 @@ After verification phase, you can reset HTTP Spy and then set a new test plan.
 If you are done with your tests, then you have to stop HTTP Spy to clean up
 resources it consumes.
 
-Some good practices with [JUnit](http://junit.org):
+Some good practices for usage with [JUnit](http://junit.org):
 
 * Start HTTP Spy in a method annotated as `@Before` or `@BeforeClass`
 * Stop HTTP Spy in a method annotated as `@After` or `@AfterClass`
@@ -91,55 +90,65 @@ verify() | Verify actual requests against expectations
 reset() | Reset the current test plan in order to set new test plan
 stop() | Stop HTTP Spy
 
+### Stub responses for the SUT requests
 
-TODO Complete
+`StubPlan` is a test plan for HTTP Spy that provides responses based on request
+features. It implements [Test Stub](http://xunitpatterns.com/Test%20Stub.html)
+object. For example, you can set up HTTP Spy to send a response with body
+`Fine` on every request with body `How are you`. You can specify as many request
+expectations as you wish and specify a desired response for every expectation.
 
-Start HTTP Spy instance on `0.0.0.0` network interface, on port number `47604`
-and let it service requests on HTTP path `/spyseverpath`:
+A request unmatched to all specified expectation is recorded. During verification,
+HTTP Spy lists all unmatched requests and reports a failure if there are any.
+
+This a multithreaded test plan, so you can run HTTP Spy with many servicing threads.
+
+Below is an example of `StubPlan` usage.
+
+First, start HTTP Spy instance on `0.0.0.0` network interface, on port number `47604`
+and let it service requests on HTTP path `/spyseverpath`. We also want it to serve
+requests concurrently in 10 threads.
 
     HttpSpy httpSpy = CamelJettyHttpSpy("0.0.0.0", 47604, "/spyseverpath");
+    httpSpy.setServiceThreadsNumber(10);
     httpSpy.start();
 
 Setup some expectations:
 
-    httpSpy.expectRequests((new AbstractRequestExpectationListBuilder() {
-        public void build() {
+    httpSpy.testPlan(new AbstractStubPlanBuilder() {
+        public void compose() {
             expect(request()
-                         .withBody(matching(CoreMatchers.containsString("Hello")))
-                         .withHeader("h1", 0, equalTo("v1"))
-                         .withMethod(equalTo("POST"))
-                         .withPath(equalTo("/path/"))
-                         .andResponse(response()
-                             .withStatus(200)
-                             .withBody("OK")
-                             .withHeader("h2", "v2")));
+                    .withMethod(equalToIgnoreCase("get"))
+                    .andResponse(response()
+                        .withBody("First")));
             expect(request()
-                         .withBody(equalToXml(myXmlSample))
-                         .andResponse(response()
-                             .withStatus(500)
-                             .withBody("Cannot help")
-                             .withDelay(TimeUnit.MILLISECONDS, 1000)));
-         }
-    });
+                    .withBody(equalToJson("{\"value1\":\"1\", \"value2\":\"2\"}"))
+                    .andResponse(response()
+                        .withStatus(500)
+                        .withBody("Second")));
+            expect(request()
+                    .withHeader("h1", matching(containsString("v1")))
+                    .andResponse(response()
+                        .withBody("Third")
+                        .withDelay(TimeUnit.MILLISECONDS, 1000)));
+            }
+        });
 
-Here we expect two requests to come. The first request is expected to have
-string `Hello` in its body. It also should have a header `h1` with the first
-value equal to `v1`. We also expect it to be `POST` request coming on HTTP path
-`/path/`. Finally, we ask HTTP Spy to send an `OK` response.
-The second request is expected to have an XML body identical to some sample. We
-ask HTTP Spy to respond with `500` error.
+As you may note, it is possible to set various expectations on the body content
+or on a header value. It is possible to send responses with various status codes
+and with some delay (useful to emulate a slow server).
 
-As soon as HTTP Spy is up and has expectations, you are ready to run your HTTP client
-and let it send requests. After client finished, you ask HTTP Spy to verify
+As soon as HTTP Spy is up and has a test plan, you are ready to run your client
+SUT and let it send requests. After client finished, you ask HTTP Spy to verify
 requests it has received:
 
     ...
-    // Client under test executes requests...
+    // SUT executes requests...
     ...
     httpSpy.verify();
 
-HTTP Spy will fail the test if it finds that some expectations on client
-requests are not met.
+HTTP Spy will fail the test if it finds that some requests did not match any
+expectation specified in the test plan.
 
 If you don't need HTTP Spy anymore, then you need to stop it to free up
 resources it consumes:
@@ -150,6 +159,9 @@ Alternatively, you can reset HTTP Spy expectations and continue using the same
 instance in the next test:
 
     httpSpy.reset();
+
+## Checking request order
+TODO
 
 ## Usage examples
 
@@ -168,6 +180,18 @@ For different options to set request expectations, see Javadoc of methods in
 
 For response options, see Javadoc of methods in `ResponseBuilder` interface.
 
-//TODO Describe stub test plan
 //TODO Describe sequence test plan
 //TODO Describe strict headers
+
+## Implementation details
+
+This version of HTTP Spy is implemented with [Camel Jetty](http://camel.apache.org/jetty.html).
+HTTP Spy uses [XMLUnit](http://www.xmlunit.org/) for XML matching and
+[JSONassert](https://github.com/skyscreamer/JSONassert) for JSON matching.
+For object matching, HTTP Spy heavily relies on [Hamcrest matcher](http://hamcrest.org/).
+Unit tests for HTTP Spy generate HTTP requests and check HTTP responses with
+the great help of [REST-assured](http://rest-assured.io/).
+
+## License
+
+HTTP Spy is licensed under Apache 2.0 license.
