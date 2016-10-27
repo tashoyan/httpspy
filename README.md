@@ -96,7 +96,7 @@ stop() | Stop HTTP Spy
 features. It implements [Test Stub](http://xunitpatterns.com/Test%20Stub.html)
 object. For example, you can set up HTTP Spy to send a response with body
 `Fine` on every request with body `How are you`. You can specify as many request
-expectations as you wish and specify a desired response for every expectation.
+expectations as you wish and a desired response for every expectation.
 
 A request unmatched to all specified expectation is recorded. During verification,
 HTTP Spy lists all unmatched requests and reports a failure if there are any.
@@ -139,16 +139,22 @@ or on a header value. It is possible to send responses with various status codes
 and with some delay (useful to emulate a slow server).
 
 As soon as HTTP Spy is up and has a test plan, you are ready to run your client
-SUT and let it send requests. After client finished, you ask HTTP Spy to verify
-requests it has received:
+SUT and let it send requests. HTTP Spy will send responses according to expectations
+in the test plan. The order of expectation checks is as following: the latest
+(most recently added) expectation is checked first.
+If HTTP Spy receives a request that does not match any expectation,
+then it sends a response with status code `500 - Internal server error` and the
+unmatched request in the body.
+
+After the client finished, you ask HTTP Spy to verify requests it has received:
 
     ...
     // SUT executes requests...
     ...
     httpSpy.verify();
 
-HTTP Spy will fail the test if it finds that some requests did not match any
-expectation specified in the test plan.
+HTTP Spy will fail the verification step (and the test) if it finds that some
+requests did not match any expectation specified in the test plan.
 
 If you don't need HTTP Spy anymore, then you need to stop it to free up
 resources it consumes:
@@ -156,11 +162,17 @@ resources it consumes:
     httpSpy.stop();
 
 Alternatively, you can reset HTTP Spy expectations and continue using the same
-instance in the next test:
+instance though with new test plan in the next test:
 
     httpSpy.reset();
 
 ## Checking request order
+
+`SequencePlan` is a special test plan for HTTP Spy to allow check requests order.
+The important thing to know about this test plan is that it is not multithreaded.
+You cannot use `SequencePlan` when you have multiple servicing threads in HTTP Spy.
+The reason is that there is no order guarantee when the server processes requests
+in multiple threads.
 TODO
 
 ## Usage examples
