@@ -74,7 +74,7 @@ After verification phase, you can reset HTTP Spy and then set a new test plan.
 If you are done with your tests, then you have to stop HTTP Spy to clean up
 resources it consumes.
 
-Some good practices:
+Some good practices with [JUnit](http://junit.org):
 
 * Start HTTP Spy in a method annotated as `@Before` or `@BeforeClass`
 * Stop HTTP Spy in a method annotated as `@After` or `@AfterClass`
