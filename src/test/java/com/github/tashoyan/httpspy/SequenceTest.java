@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class SequenceTest extends CamelJettyHttpSpyTestHarness {
+public class SequenceTest extends TestHarness {
 
     @Test
     public void oneRequestWithResponse() {

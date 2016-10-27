@@ -18,7 +18,7 @@ package com.github.tashoyan.httpspy;
 import org.junit.After;
 import org.junit.Before;
 
-public abstract class CamelJettyHttpSpyTestHarness {
+public abstract class TestHarness {
 
     protected static final String SPY_SERVER_HOST = "0.0.0.0";
 

@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class StubSimpleTest extends CamelJettyHttpSpyTestHarness {
+public class StubSimpleTest extends TestHarness {
 
     @Test
     public void methodExpected_MethodMatch() {
