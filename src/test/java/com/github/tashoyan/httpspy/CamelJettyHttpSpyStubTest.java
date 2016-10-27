@@ -306,4 +306,85 @@ public class CamelJettyHttpSpyStubTest extends CamelJettyHttpSpyTestHarness {
         response.then().statusCode(200).body(is("Fine"));
         httpSpy.verify();
     }
+
+    @Test
+    public void twoExpectations_MatchFirst() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withBody(equalTo("Hello"))
+                        .withHeader("h1", equalToIgnoreCase("v1"))
+                        .andResponse(response().withBody("First")));
+                expect(request().withMethod(matching(containsString("GET")))
+                        .withBody(equalTo("Hello"))
+                        .andResponse(response().withBody("Second")));
+            }
+        });
+        Response response =
+                with().body("Hello").header("h1", "V1").post(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("First"));
+    }
+
+    @Test
+    public void twoExpectations_MatchSecond() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withBody(equalTo("Hello"))
+                        .withHeader("h1", equalToIgnoreCase("v1"))
+                        .andResponse(response().withBody("First")));
+                expect(request().withMethod(matching(containsString("GET")))
+                        .withBody(equalTo("Hello"))
+                        .andResponse(response().withBody("Second")));
+            }
+        });
+        Response response = with().body("Hello").get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Second"));
+    }
+
+    @Test
+    public void twoExpectations_MatchBoth() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withBody(equalTo("Hello"))
+                        .withHeader("h1", equalToIgnoreCase("v1"))
+                        .andResponse(response().withBody("First")));
+                expect(request().withMethod(matching(containsString("GET")))
+                        .withBody(equalTo("Hello"))
+                        .andResponse(response().withBody("Second")));
+            }
+        });
+        Response response =
+                with().body("Hello").header("h1", "V1").get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Second"));
+    }
+
+    @Test
+    public void threeExpectations_ThreeRequests_MatchDifferent() {
+        httpSpy.testPlan(new AbstractStubPlanBuilder() {
+
+            @Override
+            public void compose() {
+                expect(request().withMethod(equalTo("GET")).andResponse(
+                        response().withBody("First")));
+                expect(request().withBody(
+                        equalToJson("{\"value1\":\"1\", \"value2\":\"2\"}"))
+                        .andResponse(response().withBody("Second")));
+                expect(request().withHeader("h1", matching(containsString("v1")))
+                        .andResponse(response().withBody("Third")));
+            }
+        });
+        Response response = with().header("h1", "vv11").get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Third"));
+        response =
+                with().body("{\"value2\":\"2\", \"value1\":\"1\"}")
+                        .get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("Second"));
+        response = with().get(SPY_SERVER_URL);
+        response.then().statusCode(200).body(is("First"));
+    }
 }
