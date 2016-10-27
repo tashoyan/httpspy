@@ -198,9 +198,12 @@ For response options, see Javadoc of methods in `ResponseBuilder` interface.
 ## Implementation details
 
 This version of HTTP Spy is implemented with [Camel Jetty](http://camel.apache.org/jetty.html).
+
 HTTP Spy uses [XMLUnit](http://www.xmlunit.org/) for XML matching and
 [JSONassert](https://github.com/skyscreamer/JSONassert) for JSON matching.
+
 For object matching, HTTP Spy heavily relies on [Hamcrest matcher](http://hamcrest.org/).
+
 Unit tests for HTTP Spy generate HTTP requests and check HTTP responses with
 the great help of [REST-assured](http://rest-assured.io/).
 
