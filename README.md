@@ -166,34 +166,72 @@ instance though with new test plan in the next test:
 
     httpSpy.reset();
 
-## Checking request order
+### Checking request order
 
 `SequencePlan` is a special test plan for HTTP Spy to allow check requests order.
 The important thing to know about this test plan is that it is not multithreaded.
 You cannot use `SequencePlan` when you have multiple servicing threads in HTTP Spy.
 The reason is that there is no order guarantee when the server processes requests
 in multiple threads.
-TODO
 
-## Usage examples
+With this test plan, HTTP Spy expects requests from SUT and sends responses back
+exactly in the order specified with expectations. HTTP Spy. During verification
+phase, HTTP Spy checks that the number of actual requests is equal to the number
+of expectations, and each actual request matches its corresponding expectation.
+If the number differs or a request does not match, then the verification fails
+(and the test along with it).
+
+Below is an example of `SequencePlan` usage.
+
+First, start HTTP Spy instance on `0.0.0.0` network interface, on port number `47604`
+and let it service requests on HTTP path `/spyseverpath`. Here we do not specify
+the number of servicing threads; only default value `1` is valid.
+
+    HttpSpy httpSpy = CamelJettyHttpSpy("0.0.0.0", 47604, "/spyseverpath");
+    httpSpy.start();
+
+Setup some expectations:
+
+    httpSpy.testPlan(new AbstractSequencePlanBuilder() {
+        public void compose() {
+            expect(request()
+                .withStrictHeaders()
+                .withBody(matching(both(containsString("Hello"))
+                                    .and(containsString("world"))))
+                .withHeader("header", matching(endsWith("111")))
+                .andResponse(response()
+                    .withStatus(200)
+                    .withBody("OK")));
+            expect(request()
+                .withMethod(equalToIgnoreCase("get"))
+            expect(request()
+                .withBody(equalToXml("<xml><color>red</color></xml>"))
+                .andResponse(response()
+                    .withStatus(500)));
+            }
+        });
+
+Here HTTP Spy expects three requests exactly in the sequence specified by the
+test plan. The rest of usage is the same as for `StubPlan`.
+
+### Usage examples
 
 For usage examples, see unit tests:
 
-* `CamelJettyHttpSpySimpleTest`: various single-threaded scenarios
-* `CamelJettyHttpSpyConcurrentTest`: multi-threaded scenarios
-
+* `CamelJettyHttpSpySimpleTest`: various scenarios with `SequencePlan`
+* `CamelJettyHttpSpyStubTest`: various scenarios with `StubPlan`
+* `CamelJettyHttpSpyBodyTest`: various different examples on setting request body expectations
+* `CamelJettyHttpSpyHeaderTest`: various different examples on setting request headers expectations
+* `CamelJettyHttpSpyConcurrentTest`: multi-threaded scenarios with `StubPlan`
 
 ## Additional documentation
 
 For configuration options, see Javadoc of methods in `HttpSpy` interface.
 
 For different options to set request expectations, see Javadoc of methods in
-`AbstractRequestExpectationListBuilder` class.
+`AbstractTestPlanBuilder` class.
 
 For response options, see Javadoc of methods in `ResponseBuilder` interface.
-
-//TODO Describe sequence test plan
-//TODO Describe strict headers
 
 ## Implementation details
 
@@ -205,7 +243,7 @@ HTTP Spy uses [XMLUnit](http://www.xmlunit.org/) for XML matching and
 For object matching, HTTP Spy heavily relies on [Hamcrest matcher](http://hamcrest.org/).
 
 Unit tests for HTTP Spy generate HTTP requests and check HTTP responses with
-the great help of [REST-assured](http://rest-assured.io/).
+great help of [REST-assured](http://rest-assured.io/).
 
 ## License
 
