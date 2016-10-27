@@ -44,8 +44,8 @@ public abstract class AbstractStubPlanBuilder
         ResponseBuilder responseBuilder =
                 requestExpectationBuilder.getResponseBuilder();
         HttpResponse response = responseBuilder.build();
-        requestExpectations.addLast(requestExpectation);
-        responses.addLast(response);
+        requestExpectations.addFirst(requestExpectation);
+        responses.addFirst(response);
     }
 
     @Override
