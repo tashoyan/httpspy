@@ -36,11 +36,12 @@ import net.jcip.annotations.ThreadSafe;
  * <li>Method {@link #getResponse } provides a safe way to concurrently get
  * responses from many threads.
  * <li>Method {@link #verify } may have no special mechanism to ensure thread
- * safety. However it should be invoked only after (be means of happens-before
- * relationship) all servicing threads are done their job.
+ * safety. However it should be invoked only after (by means of happens-before
+ * relationship) all servicing threads are done their jobs.
  * </ol>
- * An exception is a test plan that <b>by definition</b> can be used with single
- * servicing thread only. Such test plan is not required to be thread safe.
+ * An exception is a test plan that <b>by definition</b> can be used with a
+ * single servicing thread only. Such test plan is not required to be thread
+ * safe.
  */
 @ThreadSafe
 public interface TestPlan {
