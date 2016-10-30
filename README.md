@@ -21,7 +21,7 @@ HTTP system under test. Finally, you instruct HTTP Spy to verify all requests
 it received.
 
 HTTP Spy runs on a local network interface. It is possible to configure network
-port and HTTP path where HTTP Spy service incoming requests. You can also
+port and HTTP path where HTTP Spy services incoming requests. You can also
 specify the number of servicing threads. However, if you configured more than
 one servicing thread in HTTP Spy, then you cannot set expectations on request
 order.
