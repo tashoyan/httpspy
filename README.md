@@ -1,5 +1,7 @@
 # HTTP Spy
 
+[![HTTP Spy](https://maven-badges.herokuapp.com/maven-central/com.github.tashoyan/httpspy/badge.svg?style=flat)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.tashoyan%22%20AND%20a%3A%22httpspy%22)
+
 HTTP Spy is a spy tool for unit tests on HTTP clients.
 
 _For definition of test spy and how it differs from mock object, see
@@ -95,7 +97,7 @@ stop() | Stop HTTP Spy
 `StubPlan` is a test plan for HTTP Spy that provides responses based on request
 features. It implements [Test Stub](http://xunitpatterns.com/Test%20Stub.html)
 object. For example, you can set up HTTP Spy to send a response with body
-`Fine` on every request with body `How are you`. You can specify as many request
+`Fine` on every request with body `How are you?`. You can specify as many request
 expectations as you wish and a desired response for every expectation.
 
 A request unmatched to all specified expectation is recorded. During verification,
@@ -143,7 +145,7 @@ SUT and let it send requests. HTTP Spy will send responses according to expectat
 in the test plan. The order of expectation checks is as following: the latest
 (most recently added) expectation is checked first.
 If HTTP Spy receives a request that does not match any expectation,
-then it sends a response with status code `500 - Internal server error` and the
+then it sends back a response with status code `500 - Internal server error` and the
 unmatched request in the body.
 
 After the client finished, you ask HTTP Spy to verify requests it has received:
@@ -162,24 +164,24 @@ resources it consumes:
     httpSpy.stop();
 
 Alternatively, you can reset HTTP Spy expectations and continue using the same
-instance though with new test plan in the next test:
+instance, though with new test plan, in the next test:
 
     httpSpy.reset();
 
 ### Checking request order
 
-`SequencePlan` is a special test plan for HTTP Spy to allow check requests order.
+`SequencePlan` is a special test plan for HTTP Spy to allow checking requests order.
 The important thing to know about this test plan is that it is not multi-threaded.
 You cannot use `SequencePlan` when you have multiple servicing threads in HTTP Spy.
 The reason is that there is no order guarantee when the server processes requests
 in multiple threads.
 
 With this test plan, HTTP Spy expects requests from SUT and sends responses back
-exactly in the order specified with expectations. HTTP Spy. During verification
+exactly in the order specified with expectations. During verification
 phase, HTTP Spy checks that the number of actual requests is equal to the number
 of expectations, and each actual request matches its corresponding expectation.
 If the number differs or a request does not match, then the verification fails
-(and the test along with it).
+(and so the test).
 
 Below is an example of `SequencePlan` usage.
 
@@ -220,8 +222,8 @@ For usage examples, see unit tests:
 
 * `SequenceTest`: various scenarios with `SequencePlan`
 * `StubSimpleTest`: single-threaded scenarios with `StubPlan`
-* `BodyExpectationsTest`: various different examples on setting request body expectations
-* `HeaderExpectationsTest`: various different examples on setting request headers expectations
+* `BodyExpectationsTest`: various examples on setting request body expectations
+* `HeaderExpectationsTest`: various examples on setting request headers expectations
 * `StubConcurrentTest`: multi-threaded scenarios with `StubPlan`
 
 ## Additional documentation
@@ -229,7 +231,7 @@ For usage examples, see unit tests:
 For configuration options, see Javadoc of methods in `HttpSpy` interface.
 
 For different options to set request expectations, see Javadoc of methods in
-`AbstractTestPlanBuilder` class.
+`AbstractTestPlanBuilder` class and its subclasses.
 
 For response options, see Javadoc of methods in `ResponseBuilder` interface.
 

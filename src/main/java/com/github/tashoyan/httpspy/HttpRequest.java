@@ -26,7 +26,7 @@ import net.jcip.annotations.ThreadSafe;
  * {@link HttpSpy} uses it to record actual requests and to verify against
  * request expectations.
  * <p>
- * <b>Concurrency notes.</b>An instance of this class is written in the thread
+ * <b>Concurrency notes.</b> An instance of this class is written in the thread
  * that performs actual testing. Another thread reads the instance during
  * verification. The class should be thread safe.
  */
