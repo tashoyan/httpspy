@@ -28,6 +28,8 @@ import org.apache.camel.component.jetty9.JettyHttpComponent9;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link HttpSpy} based on camel-jetty component.
@@ -56,6 +58,9 @@ public class CamelJettyHttpSpy implements HttpSpy {
     private static final String DEFAULT_PATH = PATH_SEPARATOR;
 
     private static final String SPY_ROUTE_NAME = "spy-server-consumer";
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(CamelJettyHttpSpy.class);
 
     private final CamelContext camelContext;
 
@@ -209,6 +214,10 @@ public class CamelJettyHttpSpy implements HttpSpy {
         }
         isStarted = true;
         try {
+            LOGGER.debug(
+                    "Starting: {} servicing ({} real) threads, host {}, port {}, path {}",
+                    getServiceThreadsNumber(), getRealJettyThreadsNumber(),
+                    getHostname(), getPort(), getPath());
             camelContext.start();
             JettyHttpComponent9 jettyComponent =
                     camelContext.getComponent("jetty", JettyHttpComponent9.class);
@@ -226,6 +235,8 @@ public class CamelJettyHttpSpy implements HttpSpy {
                             createSpyProcessor()).setId(SPY_ROUTE_NAME);
                 }
             });
+            LOGGER.info("HTTP Spy is running: {} servicing threads on {}:{}{}",
+                    getServiceThreadsNumber(), getHostname(), getPort(), getPath());
         } catch (Exception e) {
             throw new RuntimeException("Exception while setting up Camel context", e);
         }
@@ -244,8 +255,10 @@ public class CamelJettyHttpSpy implements HttpSpy {
                 throw new IllegalStateException("Test plan is not set");
             }
             HttpRequest actualRequest = new CamelJettyHttpRequest(exchange);
+            LOGGER.debug("Received actual request: {}", actualRequest);
             HttpResponse response = testPlan.get().getResponse(actualRequest);
             try {
+                LOGGER.debug("Sending response: {}", response);
                 sendResponseInExchange(response, exchange);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -306,8 +319,11 @@ public class CamelJettyHttpSpy implements HttpSpy {
     public void stop() {
         isStarted = false;
         try {
+            LOGGER.debug("Stopping HTTP Spy on host {}, port {}, path {}",
+                    getHostname(), getPort(), getPath());
             camelContext.stop();
             camelContext.removeRoute(SPY_ROUTE_NAME);
+            LOGGER.info("HTTP Spy is stopped");
         } catch (Exception e) {
             throw new RuntimeException("Exception while shutting down Camel context",
                     e);
