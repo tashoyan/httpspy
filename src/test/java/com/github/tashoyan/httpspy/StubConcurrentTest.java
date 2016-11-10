@@ -144,7 +144,7 @@ public class StubConcurrentTest {
     @Test
     public void concurrentRequestsNumberEqualToServerThreadsNumber() throws Exception {
         warmUp();
-        int[] clientRequestsNumbers = {2, 5, 10, 15};
+        int[] clientRequestsNumbers = {2, 4, 6, 8};
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
             long executionTime = executionTimes[i];
@@ -174,7 +174,7 @@ public class StubConcurrentTest {
     public void concurrentRequestsNumberGreaterThanServerThreadsNumber()
             throws Exception {
         warmUp();
-        int[] clientRequestsNumbers = {2, 4, 8, 16};
+        int[] clientRequestsNumbers = {2, 4, 6, 8};
         int serverThreadsLack = 2;
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
