@@ -1,7 +1,7 @@
 # HTTP Spy
 
 [![HTTP Spy](https://maven-badges.herokuapp.com/maven-central/com.github.tashoyan/httpspy/badge.svg?style=flat)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.tashoyan%22%20AND%20a%3A%22httpspy%22)
-[![Build Status](https://travis-ci.org/tashoyan/httpspy.svg)](https://travis-ci.org/tashoyan/httpspy)
+[![Build Status](https://travis-ci.org/tashoyan/httpspy.svg?branch=master)](https://travis-ci.org/tashoyan/httpspy)
 
 HTTP Spy is a spy tool for unit tests on HTTP clients.
 
