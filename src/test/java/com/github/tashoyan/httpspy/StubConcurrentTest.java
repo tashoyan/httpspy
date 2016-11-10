@@ -159,6 +159,7 @@ public class StubConcurrentTest {
         if (clientRequestsNumbers.isEmpty()) {
             System.err
                     .println("Skipping the test; looks like we are running on a single-processor system");
+            return;
         }
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
@@ -192,6 +193,7 @@ public class StubConcurrentTest {
         if (clientRequestsNumbers.isEmpty()) {
             System.err
                     .println("Skipping the test; looks like we are running on a single-processor system");
+            return;
         }
         int serverThreadsLack = 2;
         long[] executionTimes = {100, 200, 500, 1000};
