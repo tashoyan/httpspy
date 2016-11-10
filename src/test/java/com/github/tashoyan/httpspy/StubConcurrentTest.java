@@ -16,7 +16,9 @@
 package com.github.tashoyan.httpspy;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -55,6 +57,15 @@ public class StubConcurrentTest {
                 + config.getFile());
         LogManager.resetConfiguration();
         DOMConfigurator.configure(config);
+    }
+
+    private List<Integer> createRequestNumbers() {
+        int processors = Runtime.getRuntime().availableProcessors();
+        List<Integer> requestNumbers = new ArrayList<>(processors);
+        for (int i = 2; i <= processors; i += 2) {
+            requestNumbers.add(i);
+        }
+        return requestNumbers;
     }
 
     private void startCamel(int clientRequestsNumber) throws Exception {
@@ -144,12 +155,15 @@ public class StubConcurrentTest {
     @Test
     public void concurrentRequestsNumberEqualToServerThreadsNumber() throws Exception {
         warmUp();
-        int[] clientRequestsNumbers = {2, 4, 6, 8};
+        List<Integer> clientRequestsNumbers = createRequestNumbers();
+        if (clientRequestsNumbers.isEmpty()) {
+            System.err
+                    .println("Skipping the test; looks like we are running on a single-processor system");
+        }
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
             long executionTime = executionTimes[i];
-            for (int j = 0; j < clientRequestsNumbers.length; j++) {
-                int clientRequestsNumber = clientRequestsNumbers[j];
+            for (Integer clientRequestsNumber : clientRequestsNumbers) {
                 int serverThreadsNumber = clientRequestsNumber;
                 startCamel(clientRequestsNumber);
                 long totalExecutionTime =
@@ -174,13 +188,16 @@ public class StubConcurrentTest {
     public void concurrentRequestsNumberGreaterThanServerThreadsNumber()
             throws Exception {
         warmUp();
-        int[] clientRequestsNumbers = {2, 4, 6, 8};
+        List<Integer> clientRequestsNumbers = createRequestNumbers();
+        if (clientRequestsNumbers.isEmpty()) {
+            System.err
+                    .println("Skipping the test; looks like we are running on a single-processor system");
+        }
         int serverThreadsLack = 2;
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
             long executionTime = executionTimes[i];
-            for (int j = 0; j < clientRequestsNumbers.length; j++) {
-                int clientRequestsNumber = clientRequestsNumbers[j];
+            for (Integer clientRequestsNumber : clientRequestsNumbers) {
                 int serverThreadsNumber = clientRequestsNumber
                         / serverThreadsLack;
                 startCamel(clientRequestsNumber);
