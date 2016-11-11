@@ -59,13 +59,15 @@ public class StubConcurrentTest {
         DOMConfigurator.configure(config);
     }
 
-    private List<Integer> createRequestNumbers() {
+    private List<Integer> createServerThreadsNumbers() {
         int processors = Runtime.getRuntime().availableProcessors();
-        List<Integer> requestNumbers = new ArrayList<>(processors);
+        System.out.println("Available processors: "
+                + processors);
+        List<Integer> serverThreadsNumbers = new ArrayList<>(processors);
         for (int i = 2; i <= processors; i += 2) {
-            requestNumbers.add(i);
+            serverThreadsNumbers.add(i);
         }
-        return requestNumbers;
+        return serverThreadsNumbers;
     }
 
     private void startCamel(int clientRequestsNumber) throws Exception {
@@ -155,8 +157,8 @@ public class StubConcurrentTest {
     @Test
     public void concurrentRequestsNumberEqualToServerThreadsNumber() throws Exception {
         warmUp();
-        List<Integer> clientRequestsNumbers = createRequestNumbers();
-        if (clientRequestsNumbers.isEmpty()) {
+        List<Integer> serverThreadsNumbers = createServerThreadsNumbers();
+        if (serverThreadsNumbers.isEmpty()) {
             System.err
                     .println("Skipping the test; looks like we are running on a single-processor system");
             return;
@@ -164,8 +166,8 @@ public class StubConcurrentTest {
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
             long executionTime = executionTimes[i];
-            for (Integer clientRequestsNumber : clientRequestsNumbers) {
-                int serverThreadsNumber = clientRequestsNumber;
+            for (Integer serverThreadsNumber : serverThreadsNumbers) {
+                int clientRequestsNumber = serverThreadsNumber;
                 startCamel(clientRequestsNumber);
                 long totalExecutionTime =
                         runTest(clientRequestsNumber, serverThreadsNumber,
@@ -189,8 +191,8 @@ public class StubConcurrentTest {
     public void concurrentRequestsNumberGreaterThanServerThreadsNumber()
             throws Exception {
         warmUp();
-        List<Integer> clientRequestsNumbers = createRequestNumbers();
-        if (clientRequestsNumbers.isEmpty()) {
+        List<Integer> serverThreadsNumbers = createServerThreadsNumbers();
+        if (serverThreadsNumbers.isEmpty()) {
             System.err
                     .println("Skipping the test; looks like we are running on a single-processor system");
             return;
@@ -199,9 +201,9 @@ public class StubConcurrentTest {
         long[] executionTimes = {100, 200, 500, 1000};
         for (int i = 0; i < executionTimes.length; i++) {
             long executionTime = executionTimes[i];
-            for (Integer clientRequestsNumber : clientRequestsNumbers) {
-                int serverThreadsNumber = clientRequestsNumber
-                        / serverThreadsLack;
+            for (Integer serverThreadsNumber : serverThreadsNumbers) {
+                int clientRequestsNumber = serverThreadsNumber
+                        * serverThreadsLack;
                 startCamel(clientRequestsNumber);
                 long totalExecutionTime =
                         runTest(clientRequestsNumber, serverThreadsNumber,
